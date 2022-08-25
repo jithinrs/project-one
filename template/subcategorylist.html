@@ -138,7 +138,7 @@
                                 {% endif %}
                                 <td>{{object.created_at}}</td>
                                 <td><img src="{{object.thumbnail.url}}" width="100px"></td>
-                                <form action="{% url 'category_delete' object.id %}" method="post">
+                                <form action="{% url 'subcategory_delete' object.id %}" method="post">
                                     {% csrf_token %}
                                     <td>
                                         <!-- <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</button>
@@ -161,7 +161,7 @@
                                         </div> -->
                                         <button type="submit" class="btn btn-dark text-white">Delete</button>
                                     </td>
-                                    <td><a href="{% url 'category_update'  object.id%} " class="btn btn-dark">up</a></td>
+                                    <td><a href="{% url 'subcategory_update'  object.id%} " class="btn btn-dark">update</a></td>
                                 </form>
                             </tr>
                             {% endfor %}

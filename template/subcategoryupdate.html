@@ -23,15 +23,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/admint/categorylist/"  class="nav-link px-0 align-middle">
-                                <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline ">Category list</span> </a>
+                            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Category list</span> </a>
                             <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a href="/categorylist" class="nav-link px-0"> <span class="d-none d-sm-inline text-warning">Product list</span></a>
-                                </li>
-                                <!-- <li>
-                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2 </a>
+                                <!-- <li class="w-100">
+                                    <a href="categorylist" class="nav-link px-0"> <span class="d-none d-sm-inline">Category add</span> </a>
                                 </li> -->
+                                <li>
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline text-warning">Subcategory update</span></a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -106,71 +106,42 @@
                 </div>
             </div>
             <div class="col py-3">
-                <!-- <div class="row"> -->
-                    <a class="btn btn-dark text-white btn-lg mb-2" href="{% url 'productadd' %}" role="button">Add New Product</a>
                 <div class="row">
-                    {% for message in messages %}
-                    <div class="alert alert-success">
-                        {{message}}
-                    </div>
-                    {% endfor %}
-                    <table class="table table-hover">
-                        <thead>
-                            <tr class="table-dark text-center ">
-                                <th>Sl.No</th>
-                                <td>Title</td>
-                                <td>Price</td>
-                                <td>Subcategory</td>
-                                <td>Brand</td>
-                                <td>img</td>
-                                <td>action</td>
-                                <td>update</td>
-                              </tr>
-                        </thead>
-                        <tbody>
-                            {% for object in object_list %}
-                            <tr class="text-center align-middle">
-                                <td >{{forloop.counter}}</td>
-                                <td>{{object.product_name}}</td>
-                                <td>₹{{object.product_max_price}}</td>
-                                <!-- {% if object.is_active == 1 %}
-                                <td>Active</td>
-                                {% else %}
-                                <td>Inactive</td>
-                                {% endif %} -->
-                                <td>{{object.subcategories_id}}</td>
-                                <td>{{object.brand}}</td>
-                                <td><img src="{{object.product_image.url}}" width="100px"></td>
-                                <form action="{% url 'product_delete' object.id %}" method="post">
-                                    {% csrf_token %}
-                                    <td>
-                                        <!-- <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</button>
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                              <div class="modal-content">
-                                                <div class="modal-header">
-                                                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                  Do you want to delete?
-                                                </div>
-                                                <div class="modal-footer">
-                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                  <button type="submit" class="btn btn-primary">Yes</button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                        </div> -->
-                                        <button type="submit" class="btn btn-dark text-white">Delete</button>
-                                    </td>
-                                    <td><a href="{% url 'product_update'  object.id%} " class="btn btn-dark">update</a></td>
-                                </form>
-                            </tr>
+                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                        <h4>Categories</h4>
+                        </div>
+                        <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for field in form %}
+                            <div class="form-group mb-3">
+                                <label>{{ field.label }}</label>
+                                <input type="{{ field.field.widget.input_type }}" name={{ field.name }} id="{{ field.name }}" class="form-control" value="{{field.value}}">
+                                {% if field.errors %}
+                                <div class="alert alert-dark" style="margin:10px">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% if field.field.widget.input_type == "file" %}
+                            <div class="form-group">
+                             <label>Current {{ field.label }}</label><br>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img src="/media/{{ field.value }}" style="height:250px"/>
+                                     </div>
+                                 </div>
+                            </div>
+                            {% endif %}
+
                             {% endfor %}
-                        </tbody>
-    
-                    </table>
+                            <button type="submit" class="btn btn-dark btn-block text-white">SAVE CATEGORY</button>
+                        </form>
+                    </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -50,10 +50,10 @@ class SubCategoryadd(adminrequiredmixin ,SuccessMessageMixin, CreateView):
     template_name = "subcategoryadd.html"
 
 class SubCategoryupdate(SuccessMessageMixin, UpdateView):
-    model = Categories
-    success_message = 'Category Updated'
+    model = SubCategory
+    success_message = 'Sub Category Updated'
     fields = "__all__"
-    template_name = "categoryupdate.html"
+    template_name = "subcategoryupdate.html"
 
 
 class Productlist(adminrequiredmixin, ListView):
@@ -66,6 +66,12 @@ class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
     fields = "__all__"
     template_name = "productadd.html"
 
+class Productupdate(SuccessMessageMixin, UpdateView):
+    model = Product
+    success_message = 'Product Updated'
+    fields = "__all__"
+    template_name = "productUpdate.html"
+
 def category_delete(request, id):
     if request.method == 'POST':
         category_id = Categories.objects.get(pk=id)
@@ -74,8 +80,8 @@ def category_delete(request, id):
 
 def subcategory_delete(request, id):
     if request.method == 'POST':
-        category_id = Categories.objects.get(pk=id)
-        category_id.delete()
+        subcategory_id = SubCategory.objects.get(pk=id)
+        subcategory_id.delete()
         return redirect('categorylist')
 
 def product_delete(request, id):

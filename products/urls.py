@@ -10,8 +10,10 @@ urlpatterns = [
     path('subcategorylist/<int:id>/', views.SubCategorylist.as_view(), name='subcategorylist'),
     path('subcategoryadd/', views.SubCategoryadd.as_view(), name='subcategoryadd'),
     path('subcategory_update/<slug:pk>/', views.SubCategoryupdate.as_view(), name='subcategory_update'),
+    path('subcategory_delete/<int:id>/', views.subcategory_delete, name='subcategory_delete'),
     path('productlist/', views.Productlist.as_view(), name='productlist'),
     path('productadd/', views.Productadd.as_view(), name='productadd'),
+    path('product_update/<slug:pk>/', views.Productupdate.as_view(), name='product_update'),
     path('product_delete/<int:id>/', views.product_delete, name='product_delete'),
 
 ]
