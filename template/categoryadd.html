@@ -141,5 +141,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
 
     </script>
+    <script>
+        document.getElementById("title").onkeyup = function() {
+            var x = document.getElementById("title").value.toLowerCase().replaceAll(" ","-");
+            document.getElementById("url_slug").value = x;
+        }
+    </script>
 </body>
 </html>
