@@ -11,8 +11,8 @@ from django.http import HttpResponse
 
 class adminrequiredmixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return render(request, '404error.html')
+        # if not request.user.is_authenticated:
+        #     return render(request, '404error.html')
         if not request.user.is_admin:
             return render(request, '404error.html')
         return super(adminrequiredmixin, self).dispatch(request, *args, **kwargs)
@@ -27,6 +27,7 @@ class Categoryadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
     success_message = 'Category Added'
     fields = "__all__"
     template_name = "categoryadd.html"
+    
 
 class Categoryupdate(adminrequiredmixin ,SuccessMessageMixin, UpdateView):
     model = Categories

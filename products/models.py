@@ -1,19 +1,42 @@
+from turtle import title
+from xml.dom import ValidationErr
 from django.db import models
 from django.urls import reverse
 
 # Create your models here.
 
+# class TitleManager(models.Manager):
+#     def Validate(self, title):
+#         x = title.title()
+#         catgeory = Categories.objects.create(
+#             title = x
+#         )
+
+
 class Categories(models.Model):
-    id =  models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
+    id =  models.AutoField(primary_key=True, unique=True)
+    title = models.CharField(max_length=255, unique=True)
     url_slug = models.CharField(max_length=255)
     thumbnail = models.FileField()
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
+    # objects = TitleManager()
 
-    class Meta:
+    class Meta():
         verbose_name_plural = "Categories"
+        # unique_together = [['title']]
+
+    # def save(self, force_insert=False, force_update=False):
+    #     self.title = self.title.title() 
+    #     super(Categories, self).save(force_insert, force_update)
+
+    # def clean(self):
+    #     cleaned_data = self.cleaned_data['title']
+    #     print(cleaned_data)
+    #     title = cleaned_data.get('title')
+    #     if Categories.objects.filter(title = title).exists():
+    #         raise ValidationErr('please enter another name')
 
     def get_absolute_url(self): 
         return reverse('categorylist')
@@ -21,6 +44,12 @@ class Categories(models.Model):
     def __str__(self):
         return self.title
 
+def clean(self):
+    cleaned_data = super(Categories,self).clean()
+    print(cleaned_data)
+    title = cleaned_data.get('title')
+    if Categories.objects.filter(title = title).exists():
+        raise ValueError('please enter another name')
 
 class SubCategory(models.Model):
     id = models.AutoField(primary_key=True)
