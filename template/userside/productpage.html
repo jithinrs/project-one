@@ -1,0 +1,75 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+<!-- <section>
+{% for pro in product %}
+{{pro.brand}}
+{% endfor %}
+</section> -->
+<div class="product_image_area">
+    <div class="container">
+        {% for pro in product %}
+        <div class="row s_product_inner">
+            <div class="col-lg-6">
+                <div class="s_Product_carousel">
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{pro.product_image.url}}" alt="">
+                    </div>
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{pro.product_image_1.url}}" alt="">
+                    </div>
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{pro.product_image_2.url}}" alt="">
+                    </div>
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{pro.product_image_3.url}}" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="s_product_text">
+                    <h3>{{pro.product_name}}</h3>
+                    <h2>₹{{pro.product_max_price}}</h2>
+                    <ul class="list">
+                        <li><a class="active" href="#">{{pro.categories_id}} > {{pro.subcategories_id}}</a></li>
+                        <li><a href="#"><span>Availibility</span> :
+                            {% if pro.in_stock_total != 0 %}
+                             In stock ( {{pro.in_stock_total}} )
+                             {% else %}
+                             Out of stock
+                             {% endif %}
+                        </a></li>
+                    </ul>
+                    <p>{{ pro.product_description }}</p>
+                    <!-- <div class="product_count">
+                        <label for="qty">Quantity:</label>
+                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                         class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                         class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+                    </div> -->
+                    <div class="card_area d-flex align-items-center">
+                        {% if pro.in_stock_total != 0 %}
+                        <a class="primary-btn" href="#">Add to Cart</a>
+                        {% else %}
+                        <a class="btn disabled btn-secondary"  href="#">Add to Cart</a>
+                        {% endif %}
+                        <!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a> -->
+                        <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- description and specification -->
+<section class="product_description_area">
+    <div class="container">
+
+    </div>
+</section>
+{% endblock %}

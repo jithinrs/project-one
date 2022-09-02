@@ -1206,7 +1206,7 @@ h1, h2, h3, h4, h5, h6 {
 /* banner area css
 ============================================================================================ */
 .banner-area {
-  background: url(../img/banner/banner-bg.jpg) center no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(35, 35, 35, 0.5)), url(../img/home-mouse.jpg) center no-repeat;
   background-size: cover;
   position: relative; }
   @media (max-width: 768px) {
@@ -1282,7 +1282,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #222222; }
 
 .organic-breadcrumb {
-  background: url(../img/banner/common-banner.jpg) center no-repeat;
+  background: url(../img/line-black.jpg) center no-repeat;
   background-size: cover;
   padding-top: 130px; }
   @media (max-width: 991px) {
@@ -3115,7 +3115,7 @@ label {
 
 .filter-bar {
   padding: 0px 20px 10px 20px;
-  background: #828bb3; }
+  background: #000000; }
   .filter-bar a, .filter-bar i {
     color: #000; }
 
@@ -3291,7 +3291,7 @@ label {
 
 .sidebar-categories .head {
   line-height: 60px;
-  background: #828bb3;
+  background: #000000;
   padding: 0 30px;
   font-size: 16px;
   font-weight: 400;
