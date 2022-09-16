@@ -108,3 +108,25 @@ def verify_code(request):
 
 def home(request):
     return render(request, 'home.html')
+
+
+def userdisplay(request):
+    user = Account.objects.filter(is_superadmin = False)
+    form = UserForm()
+    context = {
+        'user' : user,
+        'form' : form
+    }
+
+    return render(request, 'adminside/userlist.html', context)
+
+def user_block(request,id,flag):
+    if request.method == 'POST':
+         person = Account.objects.get( id = id)
+         if flag ==1:
+            person.is_active = False
+            person.save()
+         else: 
+            person.is_active = True
+            person.save()
+         return redirect('user_display')

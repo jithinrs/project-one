@@ -1,0 +1,71 @@
+{% extends 'useraccount/baseaccountt.html' %}
+{% load static %}
+
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %} 
+Dashboard
+{% endblock %}
+
+{% block dashboardactive %} 
+active
+{% endblock %}
+
+
+
+
+
+{% block testing %}
+
+<div class="card shadow my-5">
+    <div class="card-body">
+        <h6>Basic Details</h6>
+        <hr>
+        <form method="POST" class="post-form">  
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="">First Name</label>
+                    <input class="form-control" type="text" placeholder="Enter your first name">
+                </div>
+                <div class="col-md-6">
+                    <label for="">Last Name</label>
+                    <input class="form-control" type="text" placeholder="Enter your last name">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Email Address</label>
+                    <input class="form-control" type="email" placeholder="Enter you email">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Phone Number</label>
+                    <input class="form-control" type="text" placeholder="Enter you phone">
+                </div>
+                <div class="col-md-12 mt-2">
+                    <label for="">Address</label>
+                    <input class="form-control" type="text" placeholder="Enter you Address">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">City</label>
+                    <input class="form-control" type="text" placeholder="Enter you city">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">State</label>
+                    <input class="form-control" type="text" placeholder="Enter you state">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Country</label>
+                    <input class="form-control" type="text" placeholder="Enter you country">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Pin code</label>
+                    <input class="form-control" type="text" placeholder="Enter you Pin code">
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+

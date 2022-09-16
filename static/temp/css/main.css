@@ -3966,6 +3966,10 @@ label {
     .s_product_text .card_area .icon_btn:hover:after {
       opacity: 1;
       visibility: visible; }
+  .s_product_text .product-text-test{
+    text-decoration: line-through !important;
+    color: rebeccapurple;
+  }
 
 .product_count {
   display: inline-block;

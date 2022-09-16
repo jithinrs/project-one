@@ -105,132 +105,132 @@ $(document).ready(function(){
     });
 
   // Select all links with hashes
-  $('.main-menubar a[href*="#"]')
-    // Remove links that don't actually link to anything
-    .not('[href="#"]')
-    .not('[href="#0"]')
-    .click(function(event) {
-      // On-page links
-      if (
-        location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
-        && 
-        location.hostname == this.hostname
-      ) {
-        // Figure out element to scroll to
-        var target = $(this.hash);
-        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-        // Does a scroll target exist?
-        if (target.length) {
-          // Only prevent default if animation is actually gonna happen
-          event.preventDefault();
-          $('html, body').animate({
-            scrollTop: target.offset().top-70
-          }, 1000, function() {
-            // Callback after animation
-            // Must change focus!
-            var $target = $(target);
-            $target.focus();
-            if ($target.is(":focus")) { // Checking if the target was focused
-              return false;
-            } else {
-              $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
-              $target.focus(); // Set focus again
-            };
-          });
-        }
-      }
-    });
+  // $('.main-menubar a[href*="#"]')
+  //   // Remove links that don't actually link to anything
+  //   .not('[href="#"]')
+  //   .not('[href="#0"]')
+  //   .click(function(event) {
+  //     // On-page links
+  //     if (
+  //       location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
+  //       && 
+  //       location.hostname == this.hostname
+  //     ) {
+  //       // Figure out element to scroll to
+  //       var target = $(this.hash);
+  //       target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+  //       // Does a scroll target exist?
+  //       if (target.length) {
+  //         // Only prevent default if animation is actually gonna happen
+  //         event.preventDefault();
+  //         $('html, body').animate({
+  //           scrollTop: target.offset().top-70
+  //         }, 1000, function() {
+  //           // Callback after animation
+  //           // Must change focus!
+  //           var $target = $(target);
+  //           $target.focus();
+  //           if ($target.is(":focus")) { // Checking if the target was focused
+  //             return false;
+  //           } else {
+  //             $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+  //             $target.focus(); // Set focus again
+  //           };
+  //         });
+  //       }
+  //     }
+  //   });
 
 
 
-      // -------   Mail Send ajax
+  //     // -------   Mail Send ajax
 
-         $(document).ready(function() {
-            var form = $('#booking'); // contact form
-            var submit = $('.submit-btn'); // submit button
-            var alert = $('.alert-msg'); // alert div for show alert message
+  //       //  $(document).ready(function() {
+  //       //     var form = $('#booking'); // contact form
+  //       //     var submit = $('.submit-btn'); // submit button
+  //       //     var alert = $('.alert-msg'); // alert div for show alert message
 
-            // form submit event
-            form.on('submit', function(e) {
-                e.preventDefault(); // prevent default form submit
+  //       //     // form submit event
+  //       //     form.on('submit', function(e) {
+  //       //         e.preventDefault(); // prevent default form submit
 
-                $.ajax({
-                    url: 'booking.php', // form action url
-                    type: 'POST', // form submit method get/post
-                    dataType: 'html', // request type html/json/xml
-                    data: form.serialize(), // serialize form data
-                    beforeSend: function() {
-                        alert.fadeOut();
-                        submit.html('Sending....'); // change submit button text
-                    },
-                    success: function(data) {
-                        alert.html(data).fadeIn(); // fade in response data
-                        form.trigger('reset'); // reset form
-                        submit.attr("style", "display: none !important");; // reset submit button text
-                    },
-                    error: function(e) {
-                        console.log(e)
-                    }
-                });
-            });
-        });
-
-
-
-
-    $(document).ready(function() {
-        $('#mc_embed_signup').find('form').ajaxChimp();
-    });   
+  //       //         $.ajax({
+  //       //             url: 'booking.php', // form action url
+  //       //             type: 'POST', // form submit method get/post
+  //       //             dataType: 'html', // request type html/json/xml
+  //       //             data: form.serialize(), // serialize form data
+  //       //             beforeSend: function() {
+  //       //                 alert.fadeOut();
+  //       //                 submit.html('Sending....'); // change submit button text
+  //       //             },
+  //       //             success: function(data) {
+  //       //                 alert.html(data).fadeIn(); // fade in response data
+  //       //                 form.trigger('reset'); // reset form
+  //       //                 submit.attr("style", "display: none !important");; // reset submit button text
+  //       //             },
+  //       //             error: function(e) {
+  //       //                 console.log(e)
+  //       //             }
+  //       //         });
+  //       //     });
+  //       // });
 
 
 
-     if(document.getElementById("js-countdown")){
 
-        var countdown = new Date("October 17, 2018");
+  //   $(document).ready(function() {
+  //       $('#mc_embed_signup').find('form').ajaxChimp();
+  //   });   
 
-        function getRemainingTime(endtime) {
-            var milliseconds = Date.parse(endtime) - Date.parse(new Date());
-            var seconds = Math.floor(milliseconds / 1000 % 60);
-            var minutes = Math.floor(milliseconds / 1000 / 60 % 60);
-            var hours = Math.floor(milliseconds / (1000 * 60 * 60) % 24);
-            var days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
 
-        return {
-            'total': milliseconds,
-            'seconds': seconds,
-            'minutes': minutes,
-            'hours': hours,
-            'days': days
-            };
-        }
 
-        function initClock(id, endtime) {
-            var counter = document.getElementById(id);
-            var daysItem = counter.querySelector('.js-countdown-days');
-            var hoursItem = counter.querySelector('.js-countdown-hours');
-            var minutesItem = counter.querySelector('.js-countdown-minutes');
-            var secondsItem = counter.querySelector('.js-countdown-seconds');
+  //    if(document.getElementById("js-countdown")){
 
-        function updateClock() {
-            var time = getRemainingTime(endtime);
+  //       var countdown = new Date("October 17, 2018");
 
-            daysItem.innerHTML = time.days;
-            hoursItem.innerHTML = ('0' + time.hours).slice(-2);
-            minutesItem.innerHTML = ('0' + time.minutes).slice(-2);
-            secondsItem.innerHTML = ('0' + time.seconds).slice(-2);
+  //       function getRemainingTime(endtime) {
+  //           var milliseconds = Date.parse(endtime) - Date.parse(new Date());
+  //           var seconds = Math.floor(milliseconds / 1000 % 60);
+  //           var minutes = Math.floor(milliseconds / 1000 / 60 % 60);
+  //           var hours = Math.floor(milliseconds / (1000 * 60 * 60) % 24);
+  //           var days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
 
-            if (time.total <= 0) {
-              clearInterval(timeinterval);
-            }
-            }
+  //       return {
+  //           'total': milliseconds,
+  //           'seconds': seconds,
+  //           'minutes': minutes,
+  //           'hours': hours,
+  //           'days': days
+  //           };
+  //       }
 
-            updateClock();
-            var timeinterval = setInterval(updateClock, 1000);
-        }
+  //       function initClock(id, endtime) {
+  //           var counter = document.getElementById(id);
+  //           var daysItem = counter.querySelector('.js-countdown-days');
+  //           var hoursItem = counter.querySelector('.js-countdown-hours');
+  //           var minutesItem = counter.querySelector('.js-countdown-minutes');
+  //           var secondsItem = counter.querySelector('.js-countdown-seconds');
 
-        initClock('js-countdown', countdown);
+  //       function updateClock() {
+  //           var time = getRemainingTime(endtime);
 
-  };
+  //           daysItem.innerHTML = time.days;
+  //           hoursItem.innerHTML = ('0' + time.hours).slice(-2);
+  //           minutesItem.innerHTML = ('0' + time.minutes).slice(-2);
+  //           secondsItem.innerHTML = ('0' + time.seconds).slice(-2);
+
+  //           if (time.total <= 0) {
+  //             clearInterval(timeinterval);
+  //           }
+  //           }
+
+  //           updateClock();
+  //           var timeinterval = setInterval(updateClock, 1000);
+  //       }
+
+  //       initClock('js-countdown', countdown);
+
+  // };
 
 
 
@@ -285,19 +285,19 @@ $(document).ready(function(){
     
     //-------- Have Cupon Button Text Toggle Change -------//
 
-    $('.have-btn').on('click', function(e){
-        e.preventDefault();
-        $('.have-btn span').text(function(i, text){
-          return text === "Have a Coupon?" ? "Close Coupon" : "Have a Coupon?";
-        })
-        $('.cupon-code').fadeToggle("slow");
-    });
+    // $('.have-btn').on('click', function(e){
+    //     e.preventDefault();
+    //     $('.have-btn span').text(function(i, text){
+    //       return text === "Have a Coupon?" ? "Close Coupon" : "Have a Coupon?";
+    //     })
+    //     $('.cupon-code').fadeToggle("slow");
+    // });
 
-    $('.load-more-btn').on('click', function(e){
-        e.preventDefault();
-        $('.load-product').fadeIn('slow');
-        $(this).fadeOut();
-    });
+    // $('.load-more-btn').on('click', function(e){
+    //     e.preventDefault();
+    //     $('.load-product').fadeIn('slow');
+    //     $(this).fadeOut();
+    // });
     
 
 

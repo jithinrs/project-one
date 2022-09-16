@@ -35,9 +35,9 @@
     <div class="container-scroller">
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-                <a class="sidebar-brand brand-logo" href="index.html"><img src="{% static 'admin/images/logo.svg' %}"
+                <a class="sidebar-brand brand-logo" href="{% url 'adminbase' %}"><img width="200px" src="{% static 'blogo.jpg' %}"
                         alt="logo" /></a>
-                <a class="sidebar-brand brand-logo-mini" href="index.html"><img
+                <a class="sidebar-brand brand-logo-mini" href="{% url 'adminbase' %}"><img
                         src="{% static 'admin/images/logo-mini.svg' %}" alt="logo" /></a>
             </div>
             <ul class="nav">
@@ -90,7 +90,7 @@
                     </a>
                 </li>
                 <li class="nav-item menu-items">
-                    <a class="nav-link" href="{% url 'adminbase' %}">
+                    <a class="nav-link" href="{% url 'user_display' %}">
                         <span class="menu-icon">
                             <i class="mdi mdi-speedometer"></i>
                         </span>
@@ -116,6 +116,14 @@
                             <!-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> -->
                         </ul>
                     </div>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{% url 'home' %}">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-speedometer"></i>
+                        </span>
+                        <span class="menu-title">Back to site</span>
+                    </a>
                 </li>
 
 

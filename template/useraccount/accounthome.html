@@ -1,0 +1,36 @@
+{% extends 'useraccount/baseaccountt.html' %}
+{% load static %}
+
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %} 
+Dashboard
+{% endblock %}
+
+{% block dashboardactive %} 
+active
+{% endblock %}
+
+
+
+
+
+{% block testing %}
+
+{% for t in addr %}
+<!-- {{t.name}} <br>
+{{t.address_1}}<br>
+{{t.address_2}}
+{{t.city}} <br> {{t.district}}
+{{t.state}}
+{{t.pincode}}
+{{t.}} -->
+{{form}}
+
+{% endfor %}
+{{addr}}
+{% endblock %}
+
+

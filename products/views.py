@@ -1,12 +1,13 @@
 from turtle import title
 from django.shortcuts import render,redirect
-from .models import Categories, Product, SubCategory
+from .models import Categories, Product, Specification, SubCategory
 from django.views.generic import CreateView, ListView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.http import HttpResponse
 from django.contrib import messages
+from .form import *
 
 # Create your views here.
 #custom decorator
@@ -29,6 +30,11 @@ class Categoryadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
     success_message = 'Category Added'
     fields = "__all__"
     template_name = "adminside/categoryadd.html"
+
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['Subcategory'].queryset = SubCategory.objects.none()
 
     # def post(self, request, *args, **kwargs):
     #     self.title = self.title.title()
@@ -74,17 +80,28 @@ class Productlist(adminrequiredmixin, ListView):
     model = Product
     template_name = 'adminside/productlist.html'
 
-class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
+class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView, ProductsAddforms):
     model = Product
     success_message = 'Product Added'
     fields = "__all__"
     template_name = "adminside/productadd.html"
+
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['subcategories_id'].queryset = SubCategory.objects.none()
 
 class Productupdate(SuccessMessageMixin, UpdateView):
     model = Product
     success_message = 'Product Updated'
     fields = "__all__"
     template_name = "adminside/productUpdate.html"
+
+class Productspec(SuccessMessageMixin,CreateView):
+    model = Specification
+    success_message: str = "Specification added"
+    fields = "__all__"
+    template_name = "adminside/productspec.html"
 
 def category_delete(request, id):
     if request.method == 'POST':

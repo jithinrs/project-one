@@ -1,0 +1,240 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+
+<section class="banner-area organic-breadcrumb mb-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Check out </h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Checkout</a>
+                    <!-- <a href="category.html">Fashon Category</a> -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- <div class="container" style="height:50px ;">
+    <div id="msg">
+
+    </div>
+</div>
+ -->
+
+
+<div class="container mt-3 mb-3">
+    <div class="row">
+        <!-- <form action="{% url 'placeorder' %}" method="POST">
+        {% csrf_token %} -->
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-body">
+
+                    {% for a in addr %}
+                    <input type="radio">
+                    <div>
+                        {{a.name}} <br>
+                        {{a.user_id.mobile}} |
+                        {{a.user_id.email}} <br>
+                        {{a.address_1}} <br>
+                        {{a.address_2}}
+                        {{a.city}}
+                        {{a.state}}
+                        {{a.pincode}}
+                        <br> <br>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            <form action="{% url 'placeorder' %}" method="POST">
+                {% csrf_token %}
+                <div class="card shadow my-4 checkout-form">
+                    <div class="card-body">
+                        <h4 style="font-weight:bolder ;">Shipping Address</h6>
+                            <hr>
+                            {% for a in addr %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="">Name</label>
+                                    <input class="form-control" type="text" name="name" placeholder="Enter your name"
+                                        value="{{a.name}}">
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Email Address</label>
+                                    <input class="form-control" type="email" name="email" placeholder="Enter you email"
+                                        value="{{a.user_id.email}}">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Phone Number</label>
+                                    <input class="form-control" type="text" name="mobile" placeholder="Enter you phone"
+                                        value="{{a.user_id.mobile}}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="">Address lane 1</label>
+                                    <input class="form-control" type="text" name="address_1"
+                                        placeholder="Enter you Address" value="{{a.address_1}}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="">Address lane 2</label>
+                                    <input class="form-control" type="text" name="address_2"
+                                        placeholder="Enter you Address" value="{{a.address_2}}">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">City</label>
+                                    <input class="form-control" type="text" name="city" placeholder="Enter you city"
+                                        value="{{a.city}}">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">District</label>
+                                    <input class="form-control" type="text" name="district"
+                                        placeholder="Enter you District" value="{{a.district}}">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">State</label>
+                                    <input class="form-control" type="text" name="state" placeholder="Enter you state"
+                                        value="{{a.state}}">
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Pin code</label>
+                                    <input class="form-control" type="text" name="pincode"
+                                        placeholder="Enter you Pin code" value="{{a.pincode}}">
+                                </div>
+                            </div>
+                            {% endfor %}
+                    </div>
+                </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h6>Order Summary</h6>
+                    <hr>
+                    {% if cartitems %}
+                    <table class="table table stripeds table-bordereds">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cartitems %}
+                            <tr>
+                                <td><img height="40px" src="{{item.product.product_image.url}}" alt="">
+                                    {{item.product.product_name}}</td>
+                                <td>{{item.product_qty}}</td>
+                                <td>
+                                    {% if item.product.disc_details.all %}
+                                    <del class="text-dark">₹{{item.product.product_max_price}}</del>
+                                    {% else %}
+                                    ₹{{item.product.product_max_price}}
+                                    {% endif %}<br>
+                                    {% for discount in item.product.disc_details.all %}
+                                    ₹{{ discount.discountprice }}
+                                    {% endfor %}
+
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <h6 class="d-flex justify-content-between container"><span>Total
+                            :</span><span>₹{{total_price}}</span></h6>
+                    <h6 class="d-flex justify-content-between container">
+                        <span>Discount:</span><span>-₹{{discount_red}}</span>
+                    </h6><br>
+                    <h5 class="d-flex justify-content-between container"><span>Grand Total
+                            :</span><span>₹{{disc_prices}} </span></h5>
+                    <input type="hidden" value="COD" name="payment_mode">
+                    <div class="d-flex justify-content-center mt-5">
+                        <button style="width:300px ; background-color: red; font-size: 16px;" type="submit"
+                            class="genric-btn primary circle mt-1 " id="testing232">COD | Place
+                            Order</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button style="width:300px ; background-color: green; font-size: 16px;" type="button"
+                            class="genric-btn primary circle mt-1 paywithrazer" id="rzp-button1">Pay with
+                            Razerpay</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button style="width:300px ; background-color: blue; font-size: 16px;" type="submit"
+                            class="genric-btn primary circle mt-1" id="testing232">Pay with
+                            Paypal</button>
+                    </div>
+                    {% else %}
+                    <h4>Your cart is empty</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+{% for message in messages %}
+{{message}}
+{% endfor %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.paywithrazer').click(function (e) {
+            e.preventDefault;
+
+            var name = $("[name ='name']")
+            var email = $("[name ='email']")
+            var mobile = $("[name ='mobile']")
+            var address_1 = $("[name ='address_1']")
+            var address_2 = $("[name ='address_2']")
+            var city = $("[name ='city']")
+            var district = $("[name ='district']")
+            var state = $("[name ='state']")
+            var pincode = $("[name ='pincode']")
+
+            if(name == "" || email == "" || mobile == "" || address_1 =="" || address_2 == "" || city == "" || district == "" || state == "" || pincode == ""){
+                alert("All fields are mandatory")
+                return false
+            } else {
+                
+                var options = {
+                    "key": "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
+                    "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "Acme Corp",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9999999999"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+    
+                rzp1.open();
+            }
+
+        })
+    })
+</script>
+{% endblock %}

@@ -9,7 +9,7 @@
             <div class="col-first">
                 <h1>Find your products</h1>
                 <nav class="d-flex align-items-center">
-                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
                     <a href="#">Shop</a>
                     <!-- <a href="category.html">Fashon Category</a> -->
                 </nav>
@@ -21,15 +21,20 @@
 <div class="container mb-5">
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-md-5">
-			<div class="sidebar-categories">
-				<div class="head">Browse Categories</div>
+            <div class="sidebar-categories">
+                <div class="head">Browse Categories</div>
                 <ul class="main-categories">
                     {% for cat in category %}
-                    <li class="main-nav-list"><a data-toggle="collapse" href="#shopcategories{{cat.id}}" aria-expanded="false" aria-controls="shopcategories"><span
-                        class="lnr lnr-arrow-right"></span>{{cat.title}}<span class="number"></span></a>
-                        <ul class="collapse" id="shopcategories{{cat.id}}" data-toggle="collapse" aria-expanded="false" aria-controls="shopcategories">
+                    <li class="main-nav-list">
+                        <a data-toggle="collapse" href="#shopcategories{{cat.id}}" aria-expanded="false"
+                            aria-controls="shopcategories"><span class="lnr lnr-arrow-right"></span>{{cat.title}}<span
+                                class="number"></span>
+                        </a>
+                        <ul class="collapse" id="shopcategories{{cat.id}}" data-toggle="collapse" aria-expanded="false"
+                            aria-controls="shopcategories">
                             {% for subcategory in cat.subcategories.all %}
-                            <li class="main-nav-list child"><a href="#">{{subcategory.title}}</a></li>
+                            <li class="main-nav-list child"><a
+                                    href="{% url 'shopcat' subcategory.id %}">{{subcategory.title}}</a></li>
                             {% endfor %}
                         </ul>
                     </li>
@@ -69,7 +74,7 @@
                     <a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                 </div>
             </div>
-        <!-- sorting and header ends here -->
+            <!-- sorting and header ends here -->
 
 
             <section class="lattest-product-area pb-40 category-list">
@@ -78,7 +83,10 @@
                     {% for pro in productss %}
                     <div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <a href="{% url 'productview' pro.url_slug %}"><img class="img-fluid" src="{{pro.product_image.url}}" alt=""> </a>
+                            {% comment %} <a href="{% url 'productview' pro.url_slug %}"><img class="img-fluid"
+                                    src="{{pro.product_image.url}}" alt=""> </a> {% endcomment %}
+                            <a href="{{pro.get_userside_url}}"><img class="img-fluid" src="{{pro.product_image.url}}"
+                                    alt=""> </a>
                             <div class="product-details">
                                 <h6>{{pro.product_name}}</h6>
                                 <div class="price">
@@ -95,20 +103,21 @@
                                         <span class="lnr lnr-heart"></span>
                                         <p class="hover-text">Wishlist</p>
                                     </a>
-                                    <a href="" class="social-info">
+                                    <!-- <a href="" class="social-info">
                                         <span class="lnr lnr-sync"></span>
                                         <p class="hover-text">compare</p>
                                     </a>
                                     <a href="" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">view more</p>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
-
+                    
+                   
 
                 </div>
             </section>
@@ -120,7 +129,7 @@
 
 
     </div>
-</div> 
+</div>
 
 
 
