@@ -35,17 +35,19 @@
                 <div class="card-body">
 
                     {% for a in addr %}
-                    <input type="radio">
-                    <div>
-                        {{a.name}} <br>
-                        {{a.user_id.mobile}} |
-                        {{a.user_id.email}} <br>
-                        {{a.address_1}} <br>
-                        {{a.address_2}}
-                        {{a.city}}
-                        {{a.state}}
-                        {{a.pincode}}
-                        <br> <br>
+                    <div class="row">
+                        <div class="col-md-1"><input name="test" type="radio"></div>
+                        <div class="col-md-11" style="margin-left:-20px ;">
+                            {{a.name}} <br>
+                            {{a.user_id.mobile}} |
+                            {{a.user_id.email}} <br>
+                            {{a.address_1}} <br>
+                            {{a.address_2}}
+                            {{a.city}}
+                            {{a.state}}
+                            {{a.pincode}}
+                            <br> <br>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -182,56 +184,98 @@
 {{message}}
 {% endfor %}
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
     integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 <script>
     $(document).ready(function () {
 
         $('.paywithrazer').click(function (e) {
             e.preventDefault;
 
-            var name = $("[name ='name']")
-            var email = $("[name ='email']")
-            var mobile = $("[name ='mobile']")
-            var address_1 = $("[name ='address_1']")
-            var address_2 = $("[name ='address_2']")
-            var city = $("[name ='city']")
-            var district = $("[name ='district']")
-            var state = $("[name ='state']")
-            var pincode = $("[name ='pincode']")
+            var name = $("[name ='name']").val();
+            var email = $("[name ='email']").val();
+            var mobile = $("[name ='mobile']").val();
+            var address_1 = $("[name ='address_1']").val();
+            var address_2 = $("[name ='address_2']").val();
+            var city = $("[name ='city']").val();
+            var district = $("[name ='district']").val();
+            var state = $("[name ='state']").val();
+            var pincode = $("[name ='pincode']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
 
-            if(name == "" || email == "" || mobile == "" || address_1 =="" || address_2 == "" || city == "" || district == "" || state == "" || pincode == ""){
+            if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
                 alert("All fields are mandatory")
                 return false
             } else {
-                
-                var options = {
-                    "key": "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
-                    "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                    "currency": "INR",
-                    "name": "Acme Corp",
-                    "description": "Test Transaction",
-                    "image": "https://example.com/your_logo",
-                    "order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
-                    "prefill": {
-                        "name": "Gaurav Kumar",
-                        "email": "gaurav.kumar@example.com",
-                        "contact": "9999999999"
-                    },
-                    "notes": {
-                        "address": "Razorpay Corporate Office"
-                    },
-                    "theme": {
-                        "color": "#3399cc"
+                $.ajax({
+                    method: "GET",
+                    url: "/proceed-to-pay",
+                    success: function (response) {
+                        console.log(email);
+                        console.log(response);
+
+                        // console.log(response);
+                        var options = {
+                            "key": "rzp_test_6K5F5F2dkW3hkf", // Enter the Key ID generated from the Dashboard
+                            "amount": 100 * 100,//response.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "Jithu Corp",
+                            "description": "Test Transaction",
+                            "image": "https://example.com/your_logo",
+                            "order_id": response.client.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                            // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+                            "handler": function (responseb) {
+                                alert(responseb.razorpay_payment_id);
+
+                                data = {
+                                    "name": name,
+                                    "email": email,
+                                    "mobile": mobile,
+                                    "address_1": address_1,
+                                    "address_2": address_2,
+                                    "city": city,
+                                    "district": district,
+                                    "state": state,
+                                    "pincode": pincode,
+                                    "payment_mode": "Paid by Razerpay",
+                                    "payment_id": responseb.razorpay_payment_id,
+                                    csrfmiddlewaretoken: token
+                                }
+                                $.ajax({
+                                    method: "POST",
+                                    url: "/place-order",
+                                    data: data,
+                                    success: function (responsec) {
+                                        console.log(responsec.status);
+                                    }
+                                })
+                            },
+                            "prefill": {
+                                "name": name,
+                                "email": email,
+                                "contact": mobile
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+                        var rzp1 = new Razorpay(options);
+
+                        rzp1.open();
                     }
-                };
-                var rzp1 = new Razorpay(options);
-    
-                rzp1.open();
+                })
+
+
+
+
             }
 
         })

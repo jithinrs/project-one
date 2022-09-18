@@ -17,5 +17,5 @@ urlpatterns = [
     path('productspec/', views.Productspec.as_view(), name='productspec'),
     path('product_update/<slug:pk>/', views.Productupdate.as_view(), name='product_update'),
     path('product_delete/<int:id>/', views.product_delete, name='product_delete'),
-
+    path('orderlist/', views.adminorder, name='orderlist'),
 ]

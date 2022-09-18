@@ -1,23 +1,54 @@
-{% extends 'useraccount/baseaccount.html' %}
+{% extends 'useraccount/baseaccountt.html' %}
 {% load static %}
 
 {% block title %}
 {{request.user.first_name}}
 {% endblock %}
 
-{% block usertitle %} 
+{% block usertitle %}
 Orders
 {% endblock %}
 
-{% block orderactive %} 
+{% block orderactive %}
 active
 {% endblock %}
 
 
 
 
-
 {% block testing %}
+<div class="">
+    <div class="container">
+        <h3>Order History</h3>
+        <div class="row">
+            {% for obj in object_list %}
+            <div class="col-md-12 mb-3">
+                <div class="card shadow mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                {% for ord in obj.oderuser.all %}
+                                <img width="50px" src="{{ord.product_id.product_image.url}} " alt="">
+                                <div class="">
+                                    <span style="font-size:17px ;" class="text-dark">{{ord.product_id}} x {{ord.quantity}} </span><br>
+                                    <span style="font-weight: bold;">Brand:&nbsp;</span>{{ord.product_id.brand}}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div  class="col-6">
+                                <span style="font-size:16px ;" class="text-dark" >Ordered to:</span><br>
+                                {{obj.name}} | {{obj.mobile}} <br>
+                                <span style="font-size:22px ;" class="text-dark" >Total price: &nbsp;</span>₹{{obj.total_price}} <br>
+                                <span style="font-size:16px ;" class="text-dark" >Ordered status:</span> {{obj.status}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
 
 

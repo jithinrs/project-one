@@ -26,10 +26,9 @@ active
         <form method="POST" class="post-form" action="{% url 'useraddaddress' %}">  
             {% csrf_token %}
             <div class="row">
-                
                 <div class="col-md-12">
                     <label for="">Name</label>
-                    <input class="form-control" type="text" name="name" value="{{form.name}}">
+                    <input class="form-control" type="text" name="name" placeholder="Enter your name">
                 </div>
                 {% for d in data %}
                 <!-- <div class="col-md-6 mt-2">

@@ -80,6 +80,7 @@
 
                                         <li class="nav-item"><a class="nav-link text-center"
                                                 href="{% url 'useraccount' %}">Account</a></li>
+                                    </form>
                                 </ul>
                             </li>
                             {% else %}
@@ -91,7 +92,7 @@
                                 <a href="{% url 'cart' %}" class="cart position-relative"><span
                                         class="ti-bag text-dark"></span>
                                     <span
-                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white">9
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white">{{count}}
                                     </span></a>
                             </div>
 

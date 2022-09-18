@@ -8,13 +8,15 @@ from accountmanage.models import Order, OrderItem
 from products.models import SubCategory, Categories, Product, Cart, discount,wishlist
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
-from accountmanage.models import useraddress
-from accountmanage.forms import addressform
+from accountmanage.models import useraddress, Order, OrderItem
+from accountmanage.forms import addressform, addresscheckform
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
+import razorpay
 # Create your views here.
 
+client = razorpay.Client(auth=("rzp_test_6K5F5F2dkW3hkf", "juLmShGSRr7lHyIOdlYoqlrQ"))
 def home(request):
     return render(request, 'userside/landingpage.html')
 
@@ -44,7 +46,7 @@ def shopcat(request,id):
 #     model = Product
 #     template_name = 'userside/productview.html'
 
-
+@never_cache
 def SingleProView(request,cat_slug, subcat_slug, pro_slug):
     product = Product.objects.filter(url_slug = pro_slug, subcategories_id__url_slug = subcat_slug)
     tests = {
@@ -164,7 +166,7 @@ def checkout(request):
 def placeorder(request):
     
     if request.method == 'POST':
-        form = addressform(request.POST)
+        form = addresscheckform(request.POST)
         if form.is_valid():
             neworder = Order()
             neworder.user_id = request.user
@@ -179,6 +181,7 @@ def placeorder(request):
             neworder.pincode = request.POST.get('pincode')
 
             neworder.payment_mode = request.POST.get('payment_mode')
+            neworder.payment_id = request.POST.get('payment_id')
 
 
             cartitems = Cart.objects.filter(user = request.user)
@@ -192,12 +195,15 @@ def placeorder(request):
                     disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
                     total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
             neworder.total_price = disc_prices
+            neworder.save()
+
             yr = int(datetime.date.today().strftime('%Y'))
             dt = int(datetime.date.today().strftime('%d'))
             mt = int(datetime.date.today().strftime('%m'))
+            
             d = datetime.date(yr,mt,dt)
             current_date = d.strftime("%Y%m%d")
-            tracking_no = current_date + str(neworder.user_id)
+            tracking_no = current_date + str(neworder.id)
             neworder.tracking_no = tracking_no
             neworder.save()
             
@@ -218,7 +224,11 @@ def placeorder(request):
             Cart.objects.filter(user = request.user).delete()
             messages.success(request,'test work')
 
-            return redirect('/')
+            paymode = request.POST.get('payment_mode')
+            if paymode == "Paid by Razerpay":
+                print("hello")
+                return JsonResponse({"status" : "jtest work"})
+            return redirect('ordersuccess')
         else:
             print(form.errors.as_data())
     messages.success(request,'test didnot  works')
@@ -234,3 +244,42 @@ def testsubmit(request):
 def wish_list(request):
     pass
 
+
+def razorpay(request):
+    cartitems = Cart.objects.filter(user = request.user)
+    total_price = 0
+    disc_prices = 0
+    for item in cartitems:
+        try:
+            disc_pr = discount.objects.get(product_id = item.product_id)
+            disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price) * (1 - int(disc_pr.disc_percent)/100)
+        except:
+            disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
+            total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
+    DATA = {
+        "amount": 100,
+        "currency": "INR",
+        "receipt": "receipt#1",
+        "notes": {
+            "key1": "value3",
+            "key2": "value2"
+        }
+    }
+    client1 = client.order.create(data=DATA)
+    print(client1)
+    return JsonResponse({
+        'total_price' : disc_prices,
+        'client' : client1
+    })
+
+
+def successpage(request):
+    order = Order.objects.filter(user_id = request.user).order_by('-created_at')[:1]
+    ordert = Order.objects.filter(user_id = request.user).last()
+    items = OrderItem.objects.filter(order_id = ordert.id)
+    print(order)
+    context = {
+        'order' : order,
+        'items' : items
+    }
+    return render(request, 'userside/ordersuccess.html', context)

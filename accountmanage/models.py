@@ -13,6 +13,8 @@ class useraddress(models.Model):
     id =  models.AutoField(primary_key=True, unique=True)
     user_id = models.ForeignKey(Account, on_delete=models.CASCADE)
     name = models.CharField("you name",max_length=256)
+    mobile = models.CharField(max_length=32, default="1")
+    email = models.CharField(max_length=140, default='1')
     address_1 = models.CharField(max_length=1024)
     address_2 = models.CharField(max_length=1024, blank=True, null=True)
     city = models.CharField(max_length=256)
@@ -52,7 +54,7 @@ class Order(models.Model):
         ('Out for shipping', 'Out for shipping'),
         ('Completed', 'Completed')
     }
-    status = models.CharField(max_length=150, choices=orderstatus, default='Pending')
+    status = models.CharField(max_length=150, choices=orderstatus, default='Order placed')
     message = models.TextField(null=True)
     tracking_no = models.CharField(max_length=150, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,7 +66,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="oderuser")
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.FloatField(null=FALSE)
     quantity = models.IntegerField(null = False)

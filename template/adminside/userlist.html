@@ -5,7 +5,7 @@
 user
 {% endblock %}
 
-{% block categoryclass %}
+{% block useclass %}
 text-white
 {% endblock %}
 
@@ -36,10 +36,10 @@ Users List
 
             {% if object.is_active %}
             <td><a href="" class="btn btn-danger" id="del-confirm-link" data-bs-toggle="modal"
-                    data-bs-target="#BanModal{{object.id}}">Ban</a></td>
+                    data-bs-target="#BanModal{{object.id}}">Block</a></td>
             {%else%}
             <td><a href="" class="btn btn-primary" id="del-confirm-link" data-bs-toggle="modal"
-                    data-bs-target="#UnbanModal{{object.id}}">Ban</a></td>
+                    data-bs-target="#UnbanModal{{object.id}}">Unblock</a></td>
             {%endif%}
             <!-- Block Modal -->
 
@@ -48,11 +48,11 @@ Users List
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Block</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Do you want to delete?
+                            Do you want to Block this user?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -73,11 +73,11 @@ Users List
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Unblock</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Do you want to delete?
+                            Unblock this user?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

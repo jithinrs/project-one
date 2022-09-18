@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.http import HttpResponse
 from django.contrib import messages
 from .form import *
+from accountmanage.models import Order
 
 # Create your views here.
 #custom decorator
@@ -127,3 +128,10 @@ def product_delete(request, id):
 
 def adminbase(request):
     return render(request, 'adminside/adminhome.html')
+
+def adminorder(request):
+    order = Order.objects.all()
+    context = {
+        'order' : order
+    }
+    return render(request, 'adminside/orderlist.html', context)

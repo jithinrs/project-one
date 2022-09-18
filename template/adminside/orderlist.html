@@ -1,0 +1,45 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Order
+{% endblock %}
+
+{% block orderclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Order List
+{% endblock %}
+
+{% block maincontent %}
+
+<table class="table">
+    <thead>
+        <tr class="table-dark text-center text-white">
+            <th>Sl No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Tracking No</th>
+            <th>Payment mode</th>
+            <th>Order Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in order %}
+        <tr class="text-center align-middle text-white">
+            <td>{{forloop.counter}}</td>
+            <td>{{ obj.name }}</td>
+            <td>{{ obj.email }}</td>
+            <td>{{ obj.tracking_no }}</td>
+            <td>{{ obj.payment_mode }}</td>
+            <td> <select name="" id="">
+                    <option value="{{ obj.status }}">{{ obj.status }}</option>
+                </select> </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -3,5 +3,8 @@ from .import views
 
 urlpatterns = [
     path('', views.useraccount, name="useraccount"),
-    path('orders', views.userorderhistory, name='userorderhistory')
+    # path('orders', views.userorderhistory, name='userorderhistory'),
+    path('orders', views.useroderhistory.as_view(), name='userorderhistory'),
+    path('addaddress', views.addaddress, name='useraddaddress'),
+    path('updateaddress/<int:id>/', views.updateaddress, name='updateaddress'),
 ]

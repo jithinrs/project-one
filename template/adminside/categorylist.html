@@ -39,7 +39,7 @@ Categories
     {% for object in object_list %}
     <tr class="text-center align-middle text-white">
       <td>{{forloop.counter}}</td>
-      <td><a href="{% url 'subcategorylist' object.id %}" class="text-decoration-none text-primary all-details"
+      <td><a href="{% url 'subcategorylist' object.id %}" class="text-decoration-none text-primary all-details text-wrap"
           title="{{object.description}}"><span title="more">{{object.title}}</span></a></td>
       {% if object.is_active == 1 %}
       <td>Active</td>

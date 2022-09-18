@@ -19,18 +19,37 @@ active
 
 {% block testing %}
 
-{% for t in addr %}
-<!-- {{t.name}} <br>
-{{t.address_1}}<br>
-{{t.address_2}}
-{{t.city}} <br> {{t.district}}
-{{t.state}}
-{{t.pincode}}
-{{t.}} -->
-{{form}}
 
-{% endfor %}
-{{addr}}
+<div class="py-5">
+    <div class="container">
+        <div class="my-3">
+            <a href="{% url 'useraddaddress' %}" class="btn btn-primary">Add new address</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    {% for t in addr %}
+                    <div class="row">
+                        <div class="card-body text-dark col-md-8">
+                            <span>Address : {{forloop.counter}}</span> <br>
+                            <span style="font-weight:bold ; font-size:16px ;" >{{t.name}} | {{t.mobile}} | {{t.email}}</span><br>
+                            {{t.address_1}},
+                            {{t.address_2}},
+                            {{t.city}} <br> {{t.district}}
+                            {{t.state}}
+                            {{t.pincode}}
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <a href="{% url 'updateaddress' t.id %}" class="btn btn-dark">Update</a>
+                            <a href="#" class="btn btn-danger" style="margin-left:10px ;">Delete</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 
