@@ -152,7 +152,7 @@ def checkout(request):
             disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
         total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
     discount_red = total_price - disc_prices
-    print(discount_red)
+    print(disc_prices)
     context = {
         'cartitems' : cartitems, 
         'total_price' : total_price,
@@ -160,7 +160,17 @@ def checkout(request):
         'discount_red' : discount_red,
         'addr' : addr,
     }
+    for add in addr:
+        print(add.name)
     return render(request,'userside/checkout.html', context )
+
+def checkout_address(request, id):
+    address = useraddress.objects.get(id=id)
+    context = {
+        'address' : address
+    }
+    return render(request, 'userside/checkoutaddr.html', context)
+
 
 @login_required
 def placeorder(request):

@@ -69,3 +69,5 @@ def updateaddress(request,id):
 class useroderhistory(ListView):
     model = Order
     template_name = 'useraccount/userorder.html'
+
+    ordering = ['-created_at']

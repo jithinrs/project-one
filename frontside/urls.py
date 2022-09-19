@@ -14,6 +14,7 @@ urlpatterns = [
     path('update-cart', views.updateCart, name='updatecart'),
     path('delete-cart-item', views.deleteCartItem, name='deleteCartItem'),
     path('checkout', views.checkout, name='checkout'),
+    path('checkoutaddress/<int:id>', views.checkout_address, name='checkoutaddress'),
     path('wishlist', views.wish_list, name='wish_list'),
     path('place-order', views.placeorder, name='placeorder'),
     path('proceed-to-pay', views.razorpay, name = 'razorpaycheck'),
