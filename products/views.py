@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .form import *
 from accountmanage.models import Order
+from accountmanage.forms import newstatus
 
 
 # Create your views here.
@@ -132,7 +133,9 @@ def adminbase(request):
 
 def adminorder(request):
     order = Order.objects.all()
+    form = newstatus()
     context = {
-        'order' : order
+        'order' : order,
+        'form' : form
     }
     return render(request, 'adminside/orderlist.html', context)

@@ -67,7 +67,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="oderuser")
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="productcount")
     price = models.FloatField(null=FALSE)
     quantity = models.IntegerField(null = False)
 

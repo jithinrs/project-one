@@ -21,18 +21,22 @@ active
     <div class="container">
         <h3>Order History</h3>
         <div class="row">
-            {% for obj in object_list %}
+            {% for obj in orderhistory %}
             <div class="col-md-12 mb-3">
                 <div class="card shadow mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
                                 {% for ord in obj.oderuser.all %}
+                                {% if forloop.counter != 1 %}
+                                <hr>
+                                {% endif %}
                                 <img width="50px" src="{{ord.product_id.product_image.url}} " alt="">
                                 <div class="">
                                     <span style="font-size:17px ;" class="text-dark">{{ord.product_id}} x {{ord.quantity}} </span><br>
                                     <span style="font-weight: bold;">Brand:&nbsp;</span>{{ord.product_id.brand}}
                                 </div>
+                                
                                 {% endfor %}
                             </div>
                             <div  class="col-6">

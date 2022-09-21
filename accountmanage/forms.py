@@ -1,5 +1,6 @@
+from dataclasses import field
 from django import forms
-from .models import useraddress
+from .models import Order, useraddress
 
 
 class addressform(forms.ModelForm):
@@ -35,3 +36,10 @@ class addresscheckform(forms.ModelForm):
         model = useraddress
         fields = ['name', 'address_1', 'address_2', 'city', 'district', 'state', 'pincode', 'mobile', 'email']
     
+
+
+class newstatus(forms.ModelForm):
+
+    class Meta:
+        model = Order
+        fields = ['status']

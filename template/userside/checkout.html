@@ -72,7 +72,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <h6>Order Summary</h6>
-                    <hr>
+                    
                     {% if cartitems %}
                     <table class="table table stripeds table-bordereds">
                         <thead>
@@ -103,6 +103,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <hr>
                     <h6 class="d-flex justify-content-between container"><span>Total
                             :</span><span>₹{{total_price}}</span></h6>
                     <h6 class="d-flex justify-content-between container">
@@ -266,15 +267,15 @@
                     method: "GET",
                     url: "/proceed-to-pay",
                     success: function (response) {
-                        console.log(email);
+                        // console.log(email);
                         console.log(response);
 
                         // console.log(response);
                         var options = {
                             "key": "rzp_test_6K5F5F2dkW3hkf", // Enter the Key ID generated from the Dashboard
-                            "amount": 1020.1212121212212 * 100,//response.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "amount": 1, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                             "currency": "INR",
-                            "name": "Jithu Corp",
+                            "name": "Jithu Corp test",
                             "description": "Test Transaction",
                             "image": "https://example.com/your_logo",
                             "order_id": response.client.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1

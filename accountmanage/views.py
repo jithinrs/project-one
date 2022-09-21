@@ -4,6 +4,7 @@ from accountmanage.models import Order,OrderItem
 from .forms import *
 from .views import *
 from django.contrib import messages
+from authentications.models import Account
 
 from django.views.generic import CreateView, ListView, UpdateView
 
@@ -30,7 +31,7 @@ def addaddress(request):
         else:
             print(form.errors.as_data())
             messages.error(request,"you are a FAILURE!!")
-    data = useraddress.objects.filter(user_id = request.user)
+    data = Account.objects.filter(email = request.user)
     context = {
         'data' : data
     }
@@ -66,8 +67,15 @@ def updateaddress(request,id):
 
 
 
-class useroderhistory(ListView):
-    model = Order
-    template_name = 'useraccount/userorder.html'
+# class useroderhistory(ListView):
+#     model = Order
+#     template_name = 'useraccount/userorder.html'
 
-    ordering = ['-created_at']
+#     ordering = ['-created_at']
+
+def userorderhistory(request):
+    orderhistory = Order.objects.filter(user_id = request.user).order_by('-created_at')
+    context = {
+        'orderhistory' : orderhistory
+    }
+    return render(request, 'useraccount/userorder.html', context)

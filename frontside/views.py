@@ -1,7 +1,5 @@
 
-from itertools import product
-from multiprocessing import context
-from unicodedata import category
+
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from accountmanage.models import Order, OrderItem
@@ -14,11 +12,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
 import razorpay
+from django.db.models import Count
+from authentications.models import Account
 # Create your views here.
 
 client = razorpay.Client(auth=("rzp_test_6K5F5F2dkW3hkf", "juLmShGSRr7lHyIOdlYoqlrQ"))
+
+
+
+
 def home(request):
-    return render(request, 'userside/landingpage.html')
+    latest = Product.objects.all().order_by('-created_at')[:8]
+    mostpopular = Product.objects.annotate(test = Count('productcount')).order_by('-test')[:8]
+    for c in mostpopular:
+        print(c.test)
+    context = {
+        'latest' : latest,
+        'mostpopular' : mostpopular,
+    }
+    return render(request, 'userside/landingpage.html', context)
 
 @never_cache
 def shop(request):
@@ -135,7 +147,7 @@ def deleteCartItem(request):
 
 def checkout(request):
     addr = useraddress.objects.filter(user_id = request.user)
-
+    # addrtop = useraddress.objects.filter(user_id = request.user).order_by('-created_at')
     rawcart = Cart.objects.filter(user = request.user)
     for item in rawcart:
         if item.product_qty > item.product.in_stock_total:
@@ -238,6 +250,9 @@ def placeorder(request):
             if paymode == "Paid by Razerpay":
                 print("hello")
                 return JsonResponse({"status" : "jtest work"})
+            if paymode == "Paid by PayPal":
+                print("hello")
+                return JsonResponse({"status" : "paypal test work"})
             return redirect('ordersuccess')
         else:
             print(form.errors.as_data())
@@ -267,7 +282,7 @@ def razorpay(request):
             disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
             total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
     DATA = {
-        "amount": 100,
+        "amount": 1000,
         "currency": "INR",
         "receipt": "receipt#1",
         "notes": {
@@ -293,3 +308,21 @@ def successpage(request):
         'items' : items
     }
     return render(request, 'userside/ordersuccess.html', context)
+
+
+
+def checkoutaddaddr(request):
+    if request.method == "POST":
+        form = addressform(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "update succesful")
+            return  redirect('checkout')
+        else:
+            print(form.errors.as_data())
+            messages.error(request,"you are a FAILURE!!")
+    data = Account.objects.filter(email = request.user)
+    context = {
+        'data' : data
+    }
+    return render(request,'userside/addcheckoutaddr.html', context)

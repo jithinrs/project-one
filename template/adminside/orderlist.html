@@ -35,8 +35,9 @@ Order List
             <td>{{ obj.tracking_no }}</td>
             <td>{{ obj.payment_mode }}</td>
             <td> <select name="" id="">
-                    <option value="{{ obj.status }}">{{ obj.status }}</option>
+                    <option value="{{ form.status }}">{{}}</option>
                 </select> </td>
+                <!-- <td>{{form.status}}</td> -->
         </tr>
         {% endfor %}
     </tbody>

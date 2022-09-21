@@ -8,7 +8,7 @@ from django.contrib import messages,auth
 from .verify import send_otp, verify_otp
 from .form import *
 from .models import *
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout,login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
@@ -33,7 +33,7 @@ def Register(request):
             request.session['mobile']     = mobile
             request.session['password']   = password
             
-            print("mobile: ",mobile)
+            # print("mobile: ",mobile)
             send_otp(mobile)
             return redirect(verify_code)
         else:
@@ -62,6 +62,47 @@ def Login(request):
             # messages.error(request,'user does not exist..')
             return redirect('login')
     return render(request,'signin.html')
+
+
+
+
+
+def loginotp(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == "POST":
+        mobile = request.POST.get('mobile')
+        request.session['mobile'] = mobile
+        try :
+            user = Account.objects.get(mobile = mobile)
+        except:
+            messages.error(request, 'mobile is not registered')
+            return redirect('otplogin')
+    
+        send_otp(mobile)
+        return redirect(verify_loginotp)
+    return render(request, 'otplogin.html')
+
+def verify_loginotp(request):
+    if request.method =='POST':
+        otp_check = request.POST.get('otp')
+        mobile=request.session['mobile']
+
+        verify=verify_otp(mobile,otp_check)
+        user = Account.objects.get(mobile = mobile)
+        if verify:
+            mobile  = request.session['mobile']
+            print('podapatti')
+        #     user = authenticate(request,mobile = mobile)
+        # if user is not None:
+            login(request,user)
+            return redirect('home') 
+        else:
+            # messages.error(request,'user does not exist..')
+            return redirect('otplogin')
+    return render(request,'verify.html')
+
+
 
 def Logout(request):
     if request.method == 'POST':
