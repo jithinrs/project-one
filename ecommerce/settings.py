@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'products',
     'frontside',
     'accountmanage',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -148,6 +149,12 @@ STATICFILES_DIRS = [
 ACCOUNT_SID='AC88d1b4e0e16cd6bb345b62a6148060bb'
 AUTH_TOKEN=''
 SERVICES_ID='VA4840bc38f8b8963adc0d7ae1519b3443'
+
+# ACCOUNT_SID='ACee8fb23615caf7ea6d7ba1c33294891a'
+# AUTH_TOKEN='dbe1b62ac3d24ca5f72f7b060be235dd'
+# SERVICES_ID='MG367abf4e1e8a7a8479a32441f1ae75f4'
+
+
 
 MEDIA_URL="/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")

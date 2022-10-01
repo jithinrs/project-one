@@ -14,6 +14,9 @@ import datetime
 import razorpay
 from django.db.models import Count
 from authentications.models import Account
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
+
 # Create your views here.
 
 client = razorpay.Client(auth=("rzp_test_6K5F5F2dkW3hkf", "juLmShGSRr7lHyIOdlYoqlrQ"))
@@ -26,6 +29,7 @@ def home(request):
     mostpopular = Product.objects.annotate(test = Count('productcount')).order_by('-test')[:8]
     for c in mostpopular:
         print(c.test)
+        print(c.product_name)
     context = {
         'latest' : latest,
         'mostpopular' : mostpopular,
@@ -36,9 +40,13 @@ def home(request):
 def shop(request):
     category = Categories.objects.all()
     productss = Product.objects.all()
+    p = Paginator(Product.objects.all(),3)
+    page = request.GET.get('page')
+    pproduct = p.get_page(page)
     test = {
         'category':category,
-        'productss':productss
+        'productss':productss,
+        'pproduct' : pproduct
         }
     return render(request, 'userside/shop.html', test)
 
@@ -66,6 +74,14 @@ def SingleProView(request,cat_slug, subcat_slug, pro_slug):
     }
     return render(request, 'userside/productpage.html', tests)
 
+def _cart_id(request):
+    cartses = request.session.session_key
+
+    if not cartses:
+        cartses = request.session.create()
+    return cartses
+
+
 def AddToCart(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -92,6 +108,29 @@ def AddToCart(request):
                 
             
         else:
+            product_id = int(request.POST.get('product_id'))
+            product_check = Product.objects.get(id=product_id)
+
+            if(product_check):
+                if(Cart.objects.filter(session_id = _cart_id(request) , product = product_id)):
+                    return JsonResponse({"Status" : "Product already in cart"})
+
+                else:
+                    prod_qty = int(request.POST.get('product_qty'))
+
+                    if product_check.in_stock_total >= prod_qty : 
+
+
+                        try:
+                            Cart.objects.get(session_id = _cart_id(request), product = product_id )
+                        except Cart.DoesNotExist:
+                            Cart.objects.create(
+                                product = product_check,
+                                product_qty = prod_qty,
+                                session_id = _cart_id(request)
+                            )
+                        return JsonResponse({"Status" : "product added succesfully"})
+
             return JsonResponse({"Status" : "Login to continue"})
 
 
@@ -102,16 +141,44 @@ def calcprice(qty, price):
 
 
 def cart(request):
-    cart = Cart.objects.filter(user=request.user).order_by('created_at')
+    
+    try:
+        cart = Cart.objects.filter(user=request.user).order_by('created_at')
+    except:
+        cart = Cart.objects.filter(session_id = _cart_id(request)).order_by('created_at')
     context = {'cart' : cart}
     return render(request,'userside/carttest.html', context)
 
 def updateCart(request):
     if request.method == 'POST':
         prod_id = int(request.POST.get('product_id'))
-        if(Cart.objects.filter(user = request.user, product_id = prod_id)):
+        try:
+            (Cart.objects.filter(user = request.user, product_id = prod_id))
             prod_qty = int(request.POST.get('product_qty'))
             cart = Cart.objects.get(product_id =  prod_id, user = request.user)
+            cart.product_qty = prod_qty
+            cart.save()
+            qty_now = cart.product_qty
+            price = Product.objects.get(id = prod_id)
+            print(price)
+            pricec = price.product_max_price
+            npricere = calcprice(qty_now, pricec)
+            try:
+                disc = discount.objects.get(product_id = prod_id)
+                discp = disc.disc_percent
+                dpricere = calcprice(qty_now, discp)
+            except:
+                dpricere = npricere
+            print(dpricere)
+            return JsonResponse({
+                "Status" : "Updated Succesfully",
+                'npricere' : npricere,
+                'dpricere' : dpricere
+                })
+        except:
+            (Cart.objects.filter(session_id = _cart_id(request), product_id = prod_id))
+            prod_qty = int(request.POST.get('product_qty'))
+            cart = Cart.objects.get(product_id =  prod_id, session_id = _cart_id(request) )
             cart.product_qty = prod_qty
             cart.save()
             qty_now = cart.product_qty
@@ -326,3 +393,20 @@ def checkoutaddaddr(request):
         'data' : data
     }
     return render(request,'userside/addcheckoutaddr.html', context)
+    
+
+
+def cancelorder(request, id):
+    if request.method == "POST":
+        current_order = Order.objects.get(id = id)
+        print("podare")
+        if current_order.status != ("Order cancelled" or "Returned"):
+            current_order.status = "Order cancelled"
+            print("poda")
+            current_order.save()
+    return redirect('userorderhistory')
+
+def returnorder(request,id):
+    if request.method == "POST":
+        current_order = Order.objects.get(id = id)
+        

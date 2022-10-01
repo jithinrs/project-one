@@ -51,6 +51,7 @@ class Account(AbstractBaseUser):
     email           =models.EmailField(max_length=100,unique=True) 
     mobile          =models.CharField(max_length=14,unique=True,null=True)
     # gender          = models.CharField(max_length=10, null=True,blank=False)
+    profile_image = models.ImageField(upload_to='photos/profile_image',null=True,blank = True)
     is_admin        =models.BooleanField(default=False)
     is_staff        =models.BooleanField(default=False)
     is_active       =models.BooleanField(default=True)

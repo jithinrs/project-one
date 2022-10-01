@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 
-from accountmanage.models import Order,OrderItem
+from accountmanage.models import Order,OrderItem, userpic
 from .forms import *
 from .views import *
 from django.contrib import messages
 from authentications.models import Account
-
+from authentications.form import userupdateform
 from django.views.generic import CreateView, ListView, UpdateView
+from .models import *
 
 
 # Create your views here.
@@ -15,11 +16,35 @@ from django.views.generic import CreateView, ListView, UpdateView
 def useraccount(request):
     test = addressform()
     addr = useraddress.objects.filter(user_id = request.user)
+    image = userpic.objects.filter(user_id = request.user)
+    if image is not None:
+        flag = 1
+    else:
+        flag = 2
+    account = Account.objects.get(email = request.user)
     tests = {
-        'addr' : addr
+        'account' : account,
+        'image' : image,
+        'addr' : addr,
+        'flag' : flag
     }
     
     return render(request, 'useraccount/accounthome.html', tests)
+
+def updateprofile(request):
+    id = Account.objects.get(id = request.user.id)
+    if request.method == "POST":
+        form = userupdateform(request.POST, instance = id)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Updated succesfully')
+            return redirect('useraccount')
+    else:
+        form = userupdateform(instance=id)
+        context = {
+            'form' : form
+        }
+    return render(request, 'useraccount/updateprofile.html', context)
 
 def addaddress(request):
     if request.method == "POST":
@@ -79,3 +104,12 @@ def userorderhistory(request):
         'orderhistory' : orderhistory
     }
     return render(request, 'useraccount/userorder.html', context)
+
+
+def deladdress(request, id):
+    
+    address=useraddress.objects.get(id = id)
+    print(address)
+    messages.success(request,"Address Deleted")
+    address.delete()
+    return redirect('useraccount')

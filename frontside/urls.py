@@ -15,9 +15,11 @@ urlpatterns = [
     path('delete-cart-item', views.deleteCartItem, name='deleteCartItem'),
     path('checkout', views.checkout, name='checkout'),
     path('checkoutaddress/<int:id>', views.checkout_address, name='checkoutaddress'),
+    path('checkout/add_address',  views.checkoutaddaddr, name='add_checkout_addr'),
     path('wishlist', views.wish_list, name='wish_list'),
     path('place-order', views.placeorder, name='placeorder'),
     path('proceed-to-pay', views.razorpay, name = 'razorpaycheck'),
     path('ordersuccess', views.successpage, name='ordersuccess'),
     path('add-address', views.checkoutaddaddr, name='checkoutaddaddr'),
+    path('cancel_order/<int:id>', views.cancelorder, name='cancel_order'),
 ]

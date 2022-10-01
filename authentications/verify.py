@@ -19,6 +19,7 @@ def send_otp(mobile):
 
 def verify_otp(mobile,otp):
     number= '+91'+str(mobile)
+    print(number)
     account_sid = settings.ACCOUNT_SID
     auth_token = settings.AUTH_TOKEN
     service_id=settings.SERVICES_ID
@@ -33,4 +34,5 @@ def verify_otp(mobile,otp):
         print('verification confirm')
         return True
     else:
+        print("wrong")
         return False

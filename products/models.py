@@ -87,10 +87,10 @@ class SubCategory(models.Model):
 
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
-    url_slug = models.SlugField(max_length=255, unique=True)
     categories_id = models.ForeignKey(Categories, on_delete=models.CASCADE)
     subcategories_id = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=255)
+    url_slug = models.SlugField(max_length=255, unique=True)
     brand = models.CharField(max_length=255)
     product_max_price = models.CharField(max_length=255)
     product_discount_price = models.CharField(max_length=255)
@@ -116,6 +116,9 @@ class Product(models.Model):
     def get_userside_url(self):
         return reverse('productview', args=[self.categories_id.url_slug, self.subcategories_id.url_slug, self.url_slug])
 
+    def get_adminside_url(self):
+        return reverse('singleproduct', args=[self.categories_id.url_slug, self.subcategories_id.url_slug, self.url_slug])
+
     def get_suburl(self):
         return reverse('shopcat', args=[self.categories_id.url_slug, self.subcategories_id.url_slug])
     
@@ -126,13 +129,17 @@ class Product(models.Model):
 #     quantity = models.IntegerField(default=0)
 
 class Cart(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    product_qty = models.IntegerField(null=False, blank=False)
+    product_qty = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    session_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return self.user.first_name + "'s cart - " + self.product.product_name
+        try:
+            return self.user.first_name + "'s cart - " + self.product.product_name
+        except:
+            return "guest's cart - " + self.product.product_name
     
     def total_price(self):
         return int(self.product_qty * self.product.product_max_price)
@@ -170,3 +177,24 @@ class wishlist(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+
+class NewCart(models.Model):
+    cart_id = models.CharField(max_length = 250, blank=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.cart_id
+    
+
+
+class NewCartItem(models.Model):
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    newcart_id = models.ForeignKey(NewCart, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.product_id

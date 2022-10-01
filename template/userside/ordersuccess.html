@@ -63,11 +63,12 @@
                         <h1>Order confirmed</h1>
                         <h4>Your item will be delivered soon</h4>
                         <h3 class="text-danger">Thank you for your purchase!!</h3>
+                        {% for obj in order %}
                         <h4>Your tracking number is : 
-                            {% for obj in order %}
                                 {{obj.tracking_no}}
-                                {% endfor %}
-                        </h4>
+                            </h4>
+                            <h4>Mode of  payment : {{obj.payment_mode}}</h4>
+                            {% endfor %}
                     </div>
                 </div>
             </div>

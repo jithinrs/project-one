@@ -1,4 +1,6 @@
 
+from dataclasses import fields
+from pyexpat import model
 from django import forms
 from .models import Account
 
@@ -30,3 +32,8 @@ class UserForm(forms.ModelForm):
     
     def __str__(self):
         return self.first_name
+
+class userupdateform(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'email', 'mobile']

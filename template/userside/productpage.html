@@ -95,10 +95,12 @@ TUFF Games | {{pro.product_name}}
                                 {{pro.subcategories_id}}</a></li>
                         <li><a href="#"><span style="color:orange; font-weight:500;">Availibility :</span> <span
                                     style="color: black ;">
-                                    {% if pro.in_stock_total != 0 %}
-                                    In stock ( {{pro.in_stock_total}} )
-                                    {% else %}
+                                    {% if pro.in_stock_total <= 10 %}
+                                    {{pro.in_stock_total}}  item remaining <span style="color: red;font-weight:500; font-size: 20px;"> HURRY!!! </span>
+                                    {% elif pro.in_stock_total == 0 %}
                                     Out of stock
+                                    {% else %}
+                                    In stock
                                     {% endif %}</span>
                             </a></li>
                     </ul>
@@ -135,9 +137,9 @@ TUFF Games | {{pro.product_name}}
                         {% endif %}
                         <!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a> -->
                         <!-- <a style="margin-left:20px ; font-size: 40px; color: orangered;" class="icon_btn" href="#"><i class="lnr lnr lnr-heart "></i></a> -->
-                        <a style="margin-left:20px ; font-size: large; display: flex; justify-content: space-around;"
+                        <!-- <a style="margin-left:20px ; font-size: large; display: flex; justify-content: space-around;"
                             href="#" class="genric-btn danger circle arrow"> <span>Add to wishlist </span> <span><i
-                                    class="lnr lnr lnr-heart "></i> </span> </a>
+                                    class="lnr lnr lnr-heart "></i> </span> </a> -->
                     </div>
                 </div>
             </div>

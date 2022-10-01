@@ -1,4 +1,5 @@
 
+from enum import unique
 from itertools import product
 from pickle import FALSE
 from tkinter import CASCADE
@@ -30,6 +31,10 @@ class useraddress(models.Model):
     def __str__(self):
         return self.user_id.first_name + "'s address"    
 
+class userpic(models.Model):
+    id = models.AutoField(primary_key = True, unique = True)
+    user_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    user_image = models.FileField()
 
 
 class Order(models.Model):
@@ -47,15 +52,18 @@ class Order(models.Model):
     pincode = models.CharField(max_length=6,null=False)
     total_price = models.FloatField(null=False)
     payment_mode = models.CharField(max_length=150, null=False)
-    payment_id = models.CharField(max_length=250, null=True)
+    payment_id = models.CharField(max_length=250, null=True, blank=True)
     orderstatus = {
-        ('Order Placed', 'Order placed'),
-        ('Pending', 'Pending'),
-        ('Out for shipping', 'Out for shipping'),
-        ('Completed', 'Completed')
+        ('Order confirmed', 'Order confirmed'),
+        ('Shipped', 'Shipped'),
+        ('Out for Delivery', 'Out for Delivery'),
+        ('Completed', 'Completed'),
+        ('Order cancelled', 'Order cancelled'),
+        ('Returned', 'Returned')
+
     }
-    status = models.CharField(max_length=150, choices=orderstatus, default='Order placed')
-    message = models.TextField(null=True)
+    status = models.CharField(max_length=150, choices=orderstatus, default='Order confirmed')
+    message = models.TextField(null=True, blank=True)
     tracking_no = models.CharField(max_length=150, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

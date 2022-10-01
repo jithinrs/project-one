@@ -24,7 +24,7 @@
 
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your login and password!</p>
-                                <form action="" method="post">
+                                <form action="{% url 'login' %}" method="post">
                                     {% csrf_token %}
                                     <div class="form-outline form-white mb-4">
                                         <input type="text" id="email" name="email" class="form-control form-control-lg signin-placeh"
@@ -47,7 +47,9 @@
                                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
                                 </form>
                                 <div class="mt-3">
-                                    <p class="mb-0">Don't have an account? <a href="/register"
+                                    <p class="mb-0">Or login using otp<a href="{% url 'otplogin' %}"
+                                            class="text-white-50 fw-bold">click here</a>
+                                    <p class="mb-0 mt-5">Don't have an account? <a href="/register"
                                             class="text-white-50 fw-bold">Sign Up</a>
                                     </p>
                                 </div>

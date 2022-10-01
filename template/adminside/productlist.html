@@ -39,7 +39,7 @@ Products
         {% for object in object_list %}
         <tr class="text-center align-middle text-white">
             <td>{{forloop.counter}}</td>
-            <td>{{object.product_name}}</td>
+            <td><a href="{{object.get_adminside_url}}">{{object.product_name}}</a></td>
             <td>₹{{object.product_max_price}}</td>
             <!-- {% if object.is_active == 1 %}
             <td>Active</td>

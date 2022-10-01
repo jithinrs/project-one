@@ -74,3 +74,6 @@
     font-weight: bold;
     color: black;
 }
+
+
+input.inputdarkcolor:disabled, textarea { background: #2c2e33; }

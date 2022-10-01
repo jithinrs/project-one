@@ -104,11 +104,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-6 text-center">
                     <div class="section-title">
-                        <h1>Latest Products</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        <h1>New Arrival</h1>
+                        <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
                             labore et
                             dolore
-                            magna aliqua.</p>
+                            magna aliqua.</p> -->
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                 {% for obj in latest %}
                 <div class="col-lg-3 col-md-6">
                     <div class="single-product">
-                        <img class="img-fluid" src="{% static 'admin/images/jithin.jpg.' %}" alt="">
+                        <a href="{{obj.get_userside_url}}"><img class="img-fluid" src="{{obj.product_image.url}}" alt=""></a>
                         <div class="product-details">
                             <h6>{{obj.product_name}}</h6>
                             <div class="price">
@@ -156,11 +156,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-6 text-center">
                     <div class="section-title">
-                        <h1>Coming Products</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        <h1>Popular products</h1>
+                        <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
                             labore et
                             dolore
-                            magna aliqua.</p>
+                            magna aliqua.</p> -->
                     </div>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                 {% for mp in mostpopular %}
                 <div class="col-lg-3 col-md-6">
                     <div class="single-product">
-                        <img class="img-fluid" src="{% static 'admin/images/jithin.jpg.' %}" alt="">
+                        <a href="{{mp.get_userside_url}}"><img class="img-fluid" src="{{mp.product_image.url}}" alt=""></a>
                         <div class="product-details">
                             <h6>{{ mp.product_name}}</h6>
                             <div class="price">
