@@ -2,7 +2,6 @@
 from enum import unique
 from itertools import product
 from pickle import FALSE
-from tkinter import CASCADE
 from django.db import models
 from authentications.models import Account
 from products.models import Product
