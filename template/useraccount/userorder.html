@@ -56,7 +56,7 @@ active
                                 {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
                                 <span style="color:red ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
                                 {% elif obj.status == "Completed" %}
-                                <span style="color:green ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
+                                <span style="color:green ; font-weight: 600; font-size:16px ;" >Delivered</span>
                                     {% else %}
                                 <span style="color:blue ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
                                 {% endif %}
@@ -64,21 +64,20 @@ active
 
 
 
-                            <div class="col-2">
+                            <div class="col-2 d-flex align-items-center">
                                 {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
-
+                                
+                                {% elif obj.status == "Completed" %}
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#return{{obj.id}}">
+                                    Return
+                                </button>
                                 {% else %}
                                 <button type="button" class="btn btn-warning mb-2" data-toggle="modal"
                                     data-target="#cancel{{obj.id}}">
                                     Cancel order
                                 </button>
-                                {% endif %}
-                                {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
-                                {% else %}
-                                <button type="button" class="btn btn-danger" data-toggle="modal"
-                                    data-target="#return{{obj.id}}">
-                                    Return
-                                </button>
+                                
                                 {% endif %}
                             </div>
 
@@ -146,6 +145,19 @@ active
     </div>
 </div>
 
+{% if orderhistory.has_previous %}
+<a class="btn btn-primary" href="?page=1">&laquo First</a>
+<a class="btn btn-primary" href="?page={{ orderhistory.previous_page_number }}">Previous</a>
 
+{% endif %}
+
+<button class="btn btn-dark disabled">Page {{orderhistory.number}} of {{orderhistory.paginator.num_pages}}</button>
+
+
+{% if orderhistory.has_next %}
+<a class="btn btn-primary" href="?page={{ orderhistory.next_page_number }}">Next</a>
+<a class="btn btn-primary" href="?page={{orderhistory.paginator.num_pages}}">Last &raquo</a>
+
+{% endif %}
 
 {% endblock %}

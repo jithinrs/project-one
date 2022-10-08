@@ -81,3 +81,5 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.order_id.id} - {self.order_id.tracking_no}'
+    
+

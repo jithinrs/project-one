@@ -11,6 +11,8 @@
         {% block title %}
         {% endblock %}
     </title>
+    {% block scctesting1 %}
+    {% endblock %}
     <!-- Custom css -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <!-- plugins:css -->
@@ -105,42 +107,48 @@
                         <span class="menu-title {% block orderclass %} {% endblock %}">Orders</span>
                     </a>
                 </li>
-                <li class="nav-item menu-items">
+                <!-- <li class="nav-item menu-items">
                     <a class="nav-link" href="{% url 'salesreport' %}">
                         <span class="menu-icon">
                             <i class="mdi mdi-speedometer"></i>
                         </span>
                         <span class="menu-title {% block reportclass %} {% endblock %}">Sales Report</span>
                     </a>
+                </li> -->
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{% url 'couponshow' %}">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-speedometer"></i>
+                        </span>
+                        <span class="menu-title {% block couponclass %} {% endblock %}">Coupon</span>
+                    </a>
                 </li>
 
-                <!-- <li class="nav-item menu-items">
+                <li class="nav-item menu-items">
                     <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                         aria-controls="ui-basic">
                         <span class="menu-icon">
                             <i class="mdi mdi-laptop"></i>
                         </span>
-                        <span class="menu-title">Offers</span>
+                        <span class="menu-title">Sales Report</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Discount</a>
-                            </li>
-                            <li class="nav-item"> <a class="nav-link"
-                                    href="pages/ui-features/dropdowns.html">Coupons</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> -->
-                        <!-- </ul>
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'salesreport' %}">Montly</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'yearlyreport' %}">Yearly</a></li>
+                            
+                        </ul>
                     </div>
-                </li>  -->
-                <li class="nav-item menu-items">
+                </li> 
+                <!-- <li class="nav-item menu-items">
                     <a class="nav-link" href="{% url 'home' %}">
                         <span class="menu-icon">
                             <i class="mdi mdi-speedometer"></i>
                         </span>
                         <span class="menu-title">Back to site</span>
                     </a>
-                </li>
+                </li> -->
 
 
 
@@ -230,6 +238,14 @@
 
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        jQuery(document).ready(()=>{
+            
+    
+            $("#is_active").removeClass("form-control")
+        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
     <script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>

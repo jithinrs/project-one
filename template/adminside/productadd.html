@@ -50,10 +50,18 @@ Products
 <script>
     jQuery(document).ready(() => {
 
-        document.getElementById("url_slug").disabled = true
+        // document.getElementById("url_slug").disabled = true
 
-        var element = document.getElementById("url_slug");
-        element.classList.add("inputdarkcolor");
+        // var element = document.getElementById("url_slug");
+        // element.classList.add("inputdarkcolor");
+
+        $("#categories_id").change(function() {
+            var catname = this.value
+            console.log(catname);
+        })
+
+
+
     })
 
 </script>
@@ -64,7 +72,9 @@ Products
     }
 </script>
 
-
+<script>
+    
+</script>
 <!-- <script>
     $(document).ready(function () {
         document.getElementById("url_slug").disabled = True

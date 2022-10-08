@@ -56,11 +56,12 @@
                     </div>
                     {% endfor %}
                 </div>
-                <a href="{% url 'add_checkout_addr' %}" class="btn btn-primary mb-1 mx-5" style="width:170px ;"><i class="fa-solid fa-plus"></i> Add new address</a>
+                <a href="{% url 'add_checkout_addr' %}" class="btn btn-primary mb-1 mx-5" style="width:170px ;"><i
+                        class="fa-solid fa-plus"></i> Add new address</a>
             </div>
             <form action="{% url 'placeorder' %}" method="POST">
                 {% csrf_token %}
-                <div class="card shadow my-4 checkout-form">
+                <div class="card shadow my-4 checkout-form d-none">
                     <div class="card-body">
                         <h4 style="font-weight:bolder ;">Shipping Address</h6>
                             <hr>
@@ -69,6 +70,34 @@
                 </div>
         </div>
         <div class="col-md-5">
+
+            <div class="card shadow mb-4">
+                <div>
+                    <div class="card-body d-flex justify-content-center align-items-center " style="gap:10px ;">
+                        <label class="badge" style="font-size:20px ;" for="">Coupon:</label>
+                        <input type="text" name="coupon" style="width:200px ;" class="form-control">
+                        <button type="button" class="btn btn-danger couponbutton">Check</button>
+                    </div>
+                    {% if coupon_status == True %}
+                    <div class="container">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Code <strong>{{coupon_codes}}</strong> is activated!!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                    <div class="container mb-2" >
+                        <div id="msg">
+                        
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <div class="card shadow">
                 <div class="card-body">
                     <h6>Order Summary</h6>
@@ -84,10 +113,10 @@
                         </thead>
                         <tbody>
                             {% for item in cartitems %}
-                            <tr>
+                            <tr class="">
                                 <td><img height="40px" src="{{item.product.product_image.url}}" alt="">
                                     {{item.product.product_name}}</td>
-                                <td>{{item.product_qty}}</td>
+                                <td>x{{item.product_qty}}</td>
                                 <td>
                                     {% if item.product.disc_details.all %}
                                     <del class="text-dark">₹{{item.product.product_max_price}}</del>
@@ -108,13 +137,20 @@
                             :</span><span>₹{{total_price}}</span></h6>
                     <h6 class="d-flex justify-content-between container">
                         <span>Discount:</span><span>-₹{{discount_red}}</span>
-                    </h6><br>
+                    </h6>
+                    {% if coupon_status == True %}
+                    <h6 class="d-flex justify-content-between container">
+                        <span>Coupon discount:</span><span>-₹{{coup_red}}</span>
+                    </h6>
+                    {% endif %}
+                    <br>
                     <h5 class="d-flex justify-content-between container"><span>Grand Total
-                            :</span><span>₹{{disc_prices}} </span></h5>
+                            :</span><span>₹{{final_price}} </span></h5>
                     <input type="hidden" value="COD" name="payment_mode">
                     <div class="d-flex justify-content-center mt-5">
                         <button style=" font-size: 16px; border-radius:4px ; margin-bottom: 14px; height: 45px "
-                            type="submit" class="genric-btn btn-primary circle mt-1 container" id="testing232">Cash On Delivery</button>
+                            type="submit" class="genric-btn btn-primary circle mt-1 container" id="testing232">Cash On
+                            Delivery</button>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button
@@ -153,7 +189,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script
     src="https://www.paypal.com/sdk/js?client-id=AXVlzJOrsESjZE4ewaiA7nTH0ssjdm-_qlkwhFW2D3ooX7MSIPgOtTMccifJqRlVAHwfYHXPzwISBuch&currency=USD"></script>
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
 <script>
@@ -333,6 +369,39 @@
             }
 
         })
+
+
+        $('.couponbutton').click(function (e) {
+            e.preventDefault;
+            // console.log("podapatti workjsahdjh");
+            var coupon = $("[name ='coupon']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
+            data = {
+                "code": coupon,
+                csrfmiddlewaretoken: token
+            }
+            $.ajax({
+                method: "POST",
+                url: "/checkout/",
+                data: data,
+                success: function (response7) {
+                    console.log(response7.Status);
+                    if (response7.Status == "Coupon Activated") {
+                        window.location.reload();
+                    } else if (response7.Status == "Coupon changed"){
+                        window.location.reload();
+                    } else {
+                    $('#msg').empty()
+                    $('#msg').html(response7.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
+
+                    $('#msg').delay(2500).fadeOut('slow');
+                    
+                    // alert(response7.Status)
+                    }
+                }
+            })
+        })
+
     })
 </script>
 {% endblock %}

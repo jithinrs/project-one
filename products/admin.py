@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  Cart, Categories, Specification, SubCategory,Product, discount, wishlist, NewCart, NewCartItem
+from .models import  Cart, Categories, Couponuser, Specification, SubCategory,Product, discount, wishlist, NewCart, NewCartItem, Coupon
 # Register your models here.
 
 admin.site.register(Categories)
@@ -24,3 +24,7 @@ admin.site.register(wishlist)
 
 admin.site.register(NewCart)
 admin.site.register(NewCartItem)
+
+
+admin.site.register(Coupon)
+admin.site.register(Couponuser)

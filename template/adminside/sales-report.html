@@ -15,7 +15,7 @@ Sales report
 
 {% block maincontent %}
 
-<div class="row">
+<!-- <div class="row">
 
     <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
         <div class="card">
@@ -45,6 +45,21 @@ Sales report
       </div>
 
 
+</div> -->
+
+<div class="container">
+  <form action="{% url 'salesreport' %}" method="POST">
+    {% csrf_token %}
+    <div class="col-md-2">
+      <label for="" class="h5">Starting Date : </label>
+      <input type="date" id="start_date" name="start_date" required="True" class="form-control text-white">
+    </div>
+    <div class="col-md-2">
+      <label for="" class="h5">Ending Date : </label>
+    <input type="date" id="end_date" name="end_date" required="True" class="form-control text-white">
+    </div>
+    <div class="mb-2"><button class="btn btn-success btn-sm mt-2 ml-3 px-4" type="submit">Filter</button></div>
+  </form>
 </div>
 
 <div class="row">

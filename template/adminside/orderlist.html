@@ -15,6 +15,14 @@ Order List
 
 {% block maincontent %}
 
+<div class="mb-4">
+    <form action="{% url 'orderlist' %}" method="get">
+        <input type="text" class="form-control text-white" style="width:250px ; display: inline;"
+            placeholder="search..." name="key">
+        <button style="height:38px ;" class="btn btn-primary" type="submit">Search</button>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr class="table-dark text-center text-white">
@@ -192,7 +200,7 @@ Order List
 Has Next: {{orders.has_next}}
 <br><br>
 Has Previous: {{orders.has_previous}} -->
-
+{{page}}
 
 <br>
 <br>

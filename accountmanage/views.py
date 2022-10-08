@@ -8,6 +8,7 @@ from authentications.models import Account
 from authentications.form import userupdateform
 from django.views.generic import CreateView, ListView, UpdateView
 from .models import *
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -99,9 +100,15 @@ def updateaddress(request,id):
 #     ordering = ['-created_at']
 
 def userorderhistory(request):
-    orderhistory = Order.objects.filter(user_id = request.user).order_by('-created_at')
+    orderhistorys = Order.objects.filter(user_id = request.user).order_by('-created_at')
+
+    p = Paginator(Order.objects.filter(user_id = request.user).order_by('-created_at'),5)
+    page = request.GET.get('page')
+    orderhistory = p.get_page(page)
+
     context = {
-        'orderhistory' : orderhistory
+        'orderhistory' : orderhistory,
+        'orderhistorys' : orderhistorys
     }
     return render(request, 'useraccount/userorder.html', context)
 

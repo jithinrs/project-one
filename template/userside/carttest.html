@@ -29,10 +29,28 @@
 <div class="py-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 mb-5">
                 <div class="card shadow">
                     <div class="card-body cartdata">
                         {% if cart %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 class="text-center">Item</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Price</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Discount</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Quantity</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Remove</h4>
+                            </div>
+                        </div>
+                        <hr>
                         {% for item in cart %}
                         <div class="row product_data">
                             <div class="col-md-2 my-auto">
@@ -58,10 +76,10 @@
                             </div>
                             <div class="col-md-2 my-auto ">
                                 {% if item.product.in_stock_total %}
-                                <div class="product_count mt-3">
+                                <div class="product_count mt-3 d-flex justify-content-center">
                                     {% csrf_token %}
                                     <input type="hidden" value="{{ item.product.id}}" class="prod_id">
-                                    <label for="qty">Quantity:</label>
+                                    <!-- <label for="qty">Quantity:</label> -->
                                     <input type="text" name="qty" id="sst" maxlength="1" value="{{item.product_qty}}"
                                         title="Quantity:" class="input-text qty qty-input text-center">
                                     <button class="increase items-count changeQuantity increment-btn" type="button"><i
@@ -77,7 +95,7 @@
                                 </div>
                                 {% endif %}
                             </div>
-                            <div class="col-md-2 my-auto ">
+                            <div class="col-md-2 my-auto d-flex justify-content-center">
                                 <button class="genric-btn danger circle mb-2 delete-cart-item">Remove <i
                                         class="fa fa-trash" aria-hidden="true"></i></button>
                             </div>
@@ -85,9 +103,13 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% if user.is_authenticated %}
                 <a href="{% url 'checkout' %}" class="genric-btn primary circle mt-5">Checkout</a>
                 {% else %}
-                <h4>Your cart is Empty.</h4>
+                <a href="{% url 'login' %}" class="genric-btn primary circle mt-5">Checkout</a>
+                {% endif %}
+                {% else %}
+                <h4>Your cart is Empty. Go to <a href="{% url 'shop' %}">shop.</a></h4>
                 {% endif %}
             </div>
         </div>
@@ -188,7 +210,8 @@
                     $('#msg').html(response.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
 
                     $('#msg').delay(200).fadeOut('slow');
-                    $('.cartdata').load(location.href + ' .cartdata')
+                    // $('.cartdata').load(location.href + ' .cartdata')
+                    window.location.reload();
                 }
 
             })

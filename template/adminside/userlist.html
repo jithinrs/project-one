@@ -14,6 +14,12 @@ Users List
 {% endblock %}
 
 {% block maincontent %}
+<div class="mb-4">
+    <form action="{% url 'user_display' %}" method="">
+        <input type="text" class="form-control text-white" style="width:250px ; display: inline;" placeholder="search..." name="key">
+        <button style="height:38px ;" class="btn btn-primary" type="submit">Search</button>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr class="table-dark text-center text-white">
@@ -95,4 +101,20 @@ Users List
         {% endfor %}
     </tbody>
 </table>
+
+
+{% if user.has_previous %}
+<a class="btn btn-primary" href="?page=1">&laquo First</a>
+<a class="btn btn-primary" href="?page={{ user.previous_page_number }}">Previous</a>
+
+{% endif %}
+
+<span class="badge bg-primary">Page {{user.number}} of {{user.paginator.num_pages}}</span>
+
+
+{% if user.has_next %}
+<a class="btn btn-primary" href="?page={{ user.next_page_number }}">Next</a>
+<a class="btn btn-primary" href="?page={{user.paginator.num_pages}}">Last &raquo</a>
+
+{% endif %}
 {% endblock %}

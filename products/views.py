@@ -1,9 +1,13 @@
 from datetime import date, datetime, timedelta
+import email
+from unicodedata import name
 from django.shortcuts import render,redirect
 
-from django.db.models import Sum
+from django.utils import timezone
+
+from django.db.models import Sum, Q
 from authentications.models import Account
-from .models import Categories, Product, Specification, SubCategory
+from .models import Categories, Product, Specification, SubCategory,Coupon
 from django.views.generic import CreateView, ListView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
@@ -16,6 +20,7 @@ from accountmanage.forms import newstatus
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Count
+from authentications.form import UserForm 
 
 # Create your views here.
 #custom decorator
@@ -31,6 +36,15 @@ class adminrequiredmixin(AccessMixin):
 class Categorylist(adminrequiredmixin, ListView):
     model = Categories
     template_name = 'adminside/categorylist.html'
+    paginate_by = 7
+
+    def get_queryset(self):
+        key = self.request.GET.get('key')
+        print(key)
+        object_list = self.model.objects.all().order_by('title')
+        if key:
+            object_list = object_list.filter(title__icontains = key)
+        return object_list
 
 
 class Categoryadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
@@ -62,6 +76,7 @@ class Categoryupdate(adminrequiredmixin ,SuccessMessageMixin, UpdateView):
 class SubCategorylist(adminrequiredmixin,ListView):
     model = SubCategory
     template_name = 'adminside/subcategorylist.html'
+    
 
     def get_queryset(self):
         # test1 = SubCategory.objects.filter(category_id = slug).values()
@@ -70,6 +85,15 @@ class SubCategorylist(adminrequiredmixin,ListView):
 class SubCategoryFullList(adminrequiredmixin,ListView):
     model = SubCategory
     template_name = 'adminside/subcategoryfulllist.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        key = self.request.GET.get('key')
+        print(key)
+        object_list = self.model.objects.all().order_by('title')
+        if key:
+            object_list = object_list.filter(title__icontains = key)
+        return object_list
 
 class SubCategoryadd(adminrequiredmixin ,SuccessMessageMixin, CreateView):
     model = SubCategory
@@ -87,6 +111,15 @@ class SubCategoryupdate(SuccessMessageMixin, UpdateView):
 class Productlist(adminrequiredmixin, ListView):
     model = Product
     template_name = 'adminside/productlist.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        key = self.request.GET.get('key')
+        print(key)
+        object_list = self.model.objects.all().order_by('created_at')
+        if key:
+            object_list = object_list.filter(product_name__icontains = key)
+        return object_list
 
 class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView, ProductsAddforms):
     model = Product
@@ -110,6 +143,25 @@ class Productspec(SuccessMessageMixin,CreateView):
     success_message: str = "Specification added"
     fields = "__all__"
     template_name = "adminside/productspec.html"
+
+
+def userdisplay(request):
+    if 'key' in request.GET:
+        key = request.GET.get('key')
+        if key:
+            user = Account.objects.filter(is_superadmin = False, email__icontains = key).order_by('first_name')
+        else:
+            return redirect('user_display')
+    else:    
+        user = Account.objects.filter(is_superadmin = False).order_by('first_name')
+    p = Paginator(user,10)
+    page = request.GET.get('page')
+    user = p.get_page(page)
+    context = {
+        'user' : user,
+    }
+
+    return render(request, 'adminside/userlist.html', context)
 
 def SingleProduct(request,cat_slug, subcat_slug, pro_slug):
     product = Product.objects.filter(url_slug = pro_slug, subcategories_id__url_slug = subcat_slug)
@@ -162,62 +214,70 @@ def adminbase(request):
     name3 = name[2]
     name4 = name[3]
 
-
-    print(count,name)
     cod = Order.objects.filter(payment_mode = "COD").count()
     razor = Order.objects.filter(payment_mode = "Paid by Razerpay").count()
     paypal = Order.objects.filter(payment_mode = "Paid by PayPal").count()
-    print(cod)
 
-    today = date.today()
-
-    day = today.day
-    month = today.month
-    year = today.year
-
-    print(day)
     total_products = Product.objects.all().count()
     total_users = Account.objects.all().count()
 
-    order_in_a_day = Order.objects.filter(created_at__year=year, created_at__month=month, created_at__day=day).count()
-    print(order_in_a_day)
-    # diff = datetime.today() - timedelta(days=2)
-    # diff2 = datetime.today() - timedelta(days=3)
-    # diff3 = datetime.today() - timedelta(days=4)
-    # diff4 = datetime.today() - timedelta(days=5)
-    # diff5 = datetime.today() - timedelta(days=6)
-    # diff6 = datetime.today() - timedelta(days=7)
-    # diff7 = datetime.today() - timedelta(days=10)
-
-    # april = Order.objects.filter(created_at__gte = diff).count()
-    # may = Order.objects.filter(created_at__gte = diff2).count()
-    # june = Order.objects.filter(created_at__gte = diff3).count()
-    # july = Order.objects.filter(created_at__gte = diff5).count()
-    # august = Order.objects.filter(created_at__gte = diff6).count()
-    # september = Order.objects.filter(created_at__gte = diff7).count()
-
-
-
-    
     revenue = Order.objects.all().aggregate(Sum('total_price'))
     total_revenue = revenue['total_price__sum']
     total_orders = Order.objects.all().count()
 
+    today = datetime.today()
+    today_date = today.strftime("%Y-%m-%d")
 
+   
+
+    f = date(2022,9,6)
+
+    month = today.month
+    year = today.strftime("%Y")
+    one_week = datetime.today() - timedelta(days=7)
+    order_count_in_month = Order.objects.filter(created_at__year = year,created_at__month=month).count() 
+    order_count_in_day =Order.objects.filter(created_at__contains = today).count()
+    order_count_in_week = Order.objects.filter(created_at__gte = one_week).count()
+
+    print(today, today_date)
+    print(one_week)
+
+
+    today_sale = Order.objects.filter(created_at__date = today_date).count()
+    today = today.strftime("%A")
+    new_date = datetime.today() - timedelta(days = 1)
+    yester_day_sale =   Order.objects.filter(created_at__date = new_date).count()  
+    yesterday = new_date.strftime("%A")
+    new_date = new_date - timedelta(days = 1)
+    day_2 = Order.objects.filter(created_at__date = new_date).count()
+    day_2_name = new_date.strftime("%A")
+    new_date = new_date - timedelta(days = 1)
+    print(new_date)
+    day_3 = Order.objects.filter(created_at__date = new_date).count()
+    day_3_name = new_date.strftime("%A")
+    new_date = new_date - timedelta(days = 1)
+    day_4 = Order.objects.filter(created_at__date = new_date).count()
+    day_4_name = new_date.strftime("%A")
+    new_date = new_date - timedelta(days = 1)
+    day_5 = Order.objects.filter(created_at__date = new_date).count()
+    day_5_name = new_date.strftime("%A")
+
+    print(today)
+
+
+    confirmed = Order.objects.filter(status = 'Completed').count()
+    canc_return = Order.objects.filter(Q(status = "Order cancelled") | Q(status = "Returned")).count()
+
+    
+    
+    print(order_count_in_day,order_count_in_month,order_count_in_week)
     context = {
         "order" : order,
         "cod" : cod,
         "razor" : razor,
         "paypal" : paypal,
-        # "july" : july,
-        # "august" : august,
-        # "september" : september,
-        # "june" : june,
-        # "may" : may,
-        # "april" : april,
         "total_revenue" : total_revenue,
         "total_orders" : total_orders,
-        "order_in_a_day" : order_in_a_day, 
         "total_users" : total_users,
         "total_products" : total_products,
         "name1" : name1,
@@ -228,19 +288,41 @@ def adminbase(request):
         "count2" : count2,
         "count3" : count3,
         "count4" : count4,
+        "order_count_in_month" : order_count_in_month,
+        "order_count_in_day" : order_count_in_day,
+        "order_count_in_week" : order_count_in_week,
+        "confirmed" : confirmed,
+        "canc_return" : canc_return,
+        "today_sale" : today_sale,
+        "yester_day_sale" : yester_day_sale,
+        "day_2": day_2,
+        "day_3": day_3,
+        "day_4": day_4,
+        "today" : today,
+        "yesterday" : yesterday,
+        "day_2_name" : day_2_name,
+        "day_3_name" : day_3_name,
+        "day_4_name" : day_4_name,
+
     }
     return render(request, 'adminside/adminhome.html', context)
 
 def adminorder(request):
-    order = Order.objects.all().filter().order_by('-created_at')
+    if 'key' in request.GET:
+        key = request.GET.get('key')
+        if key:
+            order = Order.objects.all().filter(tracking_no__icontains = key).order_by('-created_at')
+        else:
+            return redirect('orderlist')
+    else:
+        order = Order.objects.all().filter().order_by('-created_at')
 
-    p = Paginator(Order.objects.all().filter().order_by('-created_at'), 5)
+    p = Paginator(order, 10)
     page = request.GET.get('page')
     orders = p.get_page(page)
 
     form = newstatus()
     context = {
-        'order' : order,
         'form' : form,
         'orders' : orders
     }
@@ -257,31 +339,46 @@ def update_admin_order(request,id):
 
 
 def sales_report(request):
-    today = datetime.today()
+    if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        val = datetime.strptime(end_date, '%Y-%m-%d')
+        end_date = val+timedelta(days=1)
+
+        orders = Order.objects.filter(Q(created_at__lt=end_date),Q(created_at__lt=start_date)).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
+        total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
+        # total_payment_amount = Order.objects.filter(created_at__month=month).aggregate(Sum('total_price'))
+    else:
+        today = datetime.today()
+        year = datetime.now().year
+        month = today.month
+
+        orders = Order.objects.filter(created_at__year = year,created_at__month=month).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
+        total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
+        # total_payment_amount = Order.objects.filter(created_at__month=month).aggregate(Sum('total_price'))
+
+    context = {
+        'orders':orders,
+        # 'total_payment_amount':total_payment_amount,
+        # 'ordersy' : ordersy,
+        # 'total_payment_amounty' : total_payment_amounty
+    }
+    return render(request,'adminside/sales-report.html',context)  
+
+def yearly_sales_report(request):
     year = datetime.now().year
-
-    month = today.month
-
-    orders = Order.objects.filter(created_at__month=month).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
-    total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
-    total_payment_amount = Order.objects.filter(created_at__month=month).aggregate(Sum('total_price'))
-
 
     ordersy = Order.objects.filter(created_at__year=year).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
     total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
     total_payment_amounty = Order.objects.filter(created_at__year=year).aggregate(Sum('total_price'))
-
-    print(total_payment_amount)
-    print(orders)
+    
     context = {
-        'orders':orders,
-        'total_payment_amount':total_payment_amount,
-        'ordersy' : ordersy,
-        'total_payment_amounty' : total_payment_amounty
+        # 'orders':orders,
+        # 'total_payment_amount':total_payment_amount,
+        'orders' : ordersy,
+        'total_payment_amount' : total_payment_amounty
     }
     return render(request,'adminside/sales-report.html',context)  
-
-
 
 
 def adminProView(request,cat_slug, subcat_slug, pro_slug):
@@ -290,3 +387,36 @@ def adminProView(request,cat_slug, subcat_slug, pro_slug):
         'product' : product
     }
     return render(request, 'adminside/adminproduct.html', tests)
+    # return render(request, 'adminside/adminbaseori.html', tests)
+
+
+
+def selectsubfromcat(request):
+    pass
+
+
+
+def couponshow(request):
+    coupon = Coupon.objects.all()
+    context = {
+        'coupon' : coupon
+    }
+
+    return render(request, 'adminside/coupon.html', context)
+
+def addcoupon(request):
+    form = couponform()
+    if request.method == "POST":
+        form = couponform(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('couponshow')
+        else:
+            print(form.errors.as_data())
+            messages.error(request,"you are a FAILURE!!")
+            return redirect('couponshow')
+            
+    context = {
+        'form' : form
+    }
+    return render(request, 'adminside/addcoupon.html', context)

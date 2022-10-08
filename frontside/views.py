@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from accountmanage.models import Order, OrderItem
-from products.models import SubCategory, Categories, Product, Cart, discount,wishlist
+from products.models import SubCategory, Categories, Product, Cart, discount,wishlist, Coupon, Couponuser
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from accountmanage.models import useraddress, Order, OrderItem
@@ -12,11 +12,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
 import razorpay
-from django.db.models import Count
+from django.db.models import Count,Q
 from authentications.models import Account
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-
+from datetime import date
+from products.form import couponcheck
 # Create your views here.
 
 client = razorpay.Client(auth=("rzp_test_6K5F5F2dkW3hkf", "juLmShGSRr7lHyIOdlYoqlrQ"))
@@ -40,7 +41,7 @@ def home(request):
 def shop(request):
     category = Categories.objects.all()
     productss = Product.objects.all()
-    p = Paginator(Product.objects.all(),3)
+    p = Paginator(Product.objects.all(),9)
     page = request.GET.get('page')
     pproduct = p.get_page(page)
     test = {
@@ -51,14 +52,37 @@ def shop(request):
     return render(request, 'userside/shop.html', test)
 
 
-def shopcat(request,id):
-    category = Categories.objects.all()
-    productss = Product.objects.filter(subcategories_id__id__contains = id)
+
+
+def shopcat(request,cat_slug):
+    category = Categories.objects.exclude(url_slug = cat_slug)
+    singlecategory = Categories.objects.get(url_slug = cat_slug)
+    productss = Product.objects.filter(categories_id__url_slug__contains = cat_slug)
+    p = Paginator(productss,3)
+    page = request.GET.get('page')
+    pproduct = p.get_page(page)
     test = {
         'category' : category,
-        'productss': productss
+        'productss': productss,
+        'pproduct' : pproduct,
+        'singlecategory' : singlecategory
     }
     return render(request, 'userside/catshop.html', test)
+
+def shopsubcat(request,cat_slug, subcat_slug):
+    category = Categories.objects.exclude(url_slug = cat_slug)
+    singlecategory = Categories.objects.get(url_slug = cat_slug)
+    productss = Product.objects.filter(categories_id__url_slug__contains = cat_slug, subcategories_id__url_slug__contains = subcat_slug)
+    p = Paginator(productss,3)
+    page = request.GET.get('page')
+    pproduct = p.get_page(page)
+    test = {
+        'category' : category,
+        'productss': productss,
+        'pproduct' : pproduct,
+        'singlecategory' : singlecategory
+    }
+    return render(request, 'userside/subcatshop.html', test)
 
 
 
@@ -213,6 +237,51 @@ def deleteCartItem(request):
 
 
 def checkout(request):
+    if request.method == "POST":
+        code = request.POST.get('code')
+        # print(code)
+        try:
+            today = date.today()
+            value = Coupon.objects.get(code = code)
+            if not value.valid_from <= today and value.valid_to >= today:
+                print("test")
+                return JsonResponse({"Status" : "Coupon is not valid currently"})
+                
+            print(value.offer_value)
+            try:
+                print('helloda entharo ayi')
+                test = Couponuser.objects.filter(user = request.user).exists()
+                print(test)
+                if test:
+                    print("test")
+                    current1 = Couponuser.objects.get(user = request.user)
+                    if current1.coupon_code != code:
+                        print("ivide ethiyo")
+                        current1.coupon_code = code
+                        current1.coupon_value = value.offer_value
+                        current1.coupon_modal = value
+                        current1.save()
+                        return JsonResponse({"Status" : "Coupon changed"})
+                    return JsonResponse({"Status" : "Coupon already eneterd"})
+
+                Couponuser.objects.create(
+                    user = request.user,
+                    coupon_modal = value,
+                    coupon_code = code,
+                    coupon_value = value.offer_value   
+                )
+            except Exception as e:
+                print("entho")
+                print(e)
+                pass
+            return JsonResponse({"Status" : "Coupon Activated"})
+
+        except:
+            return JsonResponse({"Status" : "invalid coupon"})
+
+
+
+
     addr = useraddress.objects.filter(user_id = request.user)
     # addrtop = useraddress.objects.filter(user_id = request.user).order_by('-created_at')
     rawcart = Cart.objects.filter(user = request.user)
@@ -230,17 +299,36 @@ def checkout(request):
         except:
             disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
         total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
+    
+    try:
+        coup_value = Couponuser.objects.get(user = request.user)
+        coupon_status = True
+        coup_perc = coup_value.coupon_value
+        coupon_codes = coup_value.coupon_code
+
+    except Exception as e:
+        coupon_codes = None
+        coupon_status = False
+        coup_perc = 0
+
     discount_red = total_price - disc_prices
-    print(disc_prices)
+
+
+    final_price  = disc_prices - disc_prices * int(coup_perc)/100
+    coup_red = disc_prices - final_price
+
     context = {
         'cartitems' : cartitems, 
         'total_price' : total_price,
         'disc_prices' : disc_prices,
         'discount_red' : discount_red,
         'addr' : addr,
+        'final_price' : final_price,
+        'coupon_status' : coupon_status,
+        'coup_red' : coup_red,
+        'coupon_codes' : coupon_codes
     }
-    for add in addr:
-        print(add.name)
+    
     return render(request,'userside/checkout.html', context )
 
 def checkout_address(request, id):
@@ -283,7 +371,22 @@ def placeorder(request):
                 except:
                     disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
                     total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
-            neworder.total_price = disc_prices
+            
+            try:
+                coup_value = Couponuser.objects.get(user = request.user)
+                coupon_status = True
+                coup_perc = coup_value.coupon_value
+                coupon_codes = coup_value.coupon_code
+
+            except Exception as e:
+                coupon_codes = None
+                coupon_status = False
+                coup_perc = 0
+
+            discount_red = total_price - disc_prices
+            final_price  = disc_prices - disc_prices * int(coup_perc)/100
+            coup_red = disc_prices - final_price
+            neworder.total_price = final_price
             neworder.save()
 
             yr = int(datetime.date.today().strftime('%Y'))
@@ -311,6 +414,7 @@ def placeorder(request):
 
 
             Cart.objects.filter(user = request.user).delete()
+            Couponuser.objects.filter(user = request.user).delete()
             messages.success(request,'test work')
 
             paymode = request.POST.get('payment_mode')
@@ -410,3 +514,53 @@ def returnorder(request,id):
     if request.method == "POST":
         current_order = Order.objects.get(id = id)
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def testing(request):
+    d = date(2022,9,9)
+    print(d)
+    f = date.today()
+
+    if request.method == "POST":
+        test = request.POST.get('key')
+        product = Product.objects.filter(Q(product_name__icontains = test) | Q(brand__icontains = test))
+        context = {
+            "product": product
+        }
+        return render(request, 'userside/test.html', context)
+
+    product = Product.objects.all()
+    print(product)
+    coup = Coupon.objects.filter(valid_to__gt = f)
+    coup1 = Coupon.objects.get(code = "testing")
+    print(coup1.valid_from)
+    if not coup1.valid_from <= f and coup1.valid_to >= f:
+        print("work aya")
+    if coup:
+        print("poda")
+    for c in coup:
+        print(c.valid_to)
+    context = {
+        'product' : product
+    }
+    return render(request, 'userside/test.html', context)

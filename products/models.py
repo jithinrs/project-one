@@ -1,8 +1,11 @@
 from email import message
+from email.policy import default
 from xml.dom import ValidationErr
 from django.db import models
 from django.urls import reverse
 from authentications.models import Account
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 # Create your models here.
 
@@ -71,7 +74,7 @@ class SubCategory(models.Model):
     thumbnail = models.FileField()
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = "Sub Categories"
@@ -134,6 +137,7 @@ class Cart(models.Model):
     product_qty = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     session_id = models.CharField(max_length=255, null=True, blank=True)
+    coupon_val = models.IntegerField(null = True, blank = True)
 
     def __str__(self):
         try:
@@ -198,3 +202,21 @@ class NewCartItem(models.Model):
 
     def __str__(self):
         return self.product_id
+
+class Coupon(models.Model):
+    code = models.CharField(max_length = 50,unique = True)
+    valid_from = models.DateField()
+    valid_to = models.DateField()
+
+    offer_value = models.IntegerField(validators = [MinValueValidator(0), MaxValueValidator(100)])
+
+    active = models.BooleanField()
+
+    def __str__(self):
+        return self.code
+
+class Couponuser(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    coupon_modal = models.ForeignKey(Coupon, on_delete = models.CASCADE, null = True, blank = True)
+    coupon_code = models.CharField(max_length = 50, null = True, blank = True)
+    coupon_value = models.IntegerField(null = True, blank = True)

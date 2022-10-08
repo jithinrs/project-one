@@ -143,6 +143,27 @@ def verify_loginotp(request):
         if verify:
             mobile  = request.session['mobile']
             print('podapatti')
+            try:
+                cart = Cart.objects.filter(session_id = _cart_id(request)).exists()
+                print("test1")
+                print(cart)
+                if cart:
+                    print("poda")
+                    cart = Cart.objects.filter(session_id = _cart_id(request))
+                    for item in cart:
+                        try:
+                            carter = Cart.objects.get(product = item.product, user = user)
+                            carter.product_qty =+ 1
+                            carter.save()
+                        except:
+                            print("naari")
+                            item.user = user
+                            item.save()
+
+
+
+            except:
+                pass
         #     user = authenticate(request,mobile = mobile)
         # if user is not None:
             print(user)
@@ -203,15 +224,7 @@ def home(request):
     return render(request, 'home.html')
 
 
-def userdisplay(request):
-    user = Account.objects.filter(is_superadmin = False)
-    form = UserForm()
-    context = {
-        'user' : user,
-        'form' : form
-    }
 
-    return render(request, 'adminside/userlist.html', context)
 
 def user_block(request,id,flag):
     if request.method == 'POST':
